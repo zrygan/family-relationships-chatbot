@@ -1,5 +1,3 @@
-from pyswip import Prolog
-
 # will house the functions needed for the chatbot to function
 
 # TODO: implement this method

@@ -1,4 +1,5 @@
 from family_tree import *
+from imports import *
 
 # TODO: implement this method
 # def ask_question():
@@ -8,7 +9,7 @@ from family_tree import *
 
 def main():
     # print a welcome message for the user FIXME: placeholder / also this is extremely optional
-    print("Greetings! I'm the AncesTree!") 
+    print("Greetings! I'm the AncesTree!") # this is so adorable HAHAHAH (zry)
     print("I house the knowledge that roots your family's connections.")
     print("How may I enlighten you today?")
 
