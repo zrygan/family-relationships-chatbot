@@ -83,56 +83,51 @@ class Family_Tree:
         self.prolog.assertz("relatives(X,Y) -: grandfather(X,Y); grandfather(Y,X); parent(X,Y); parent(Y,X); aunt(X,Y); aunt(Y,X); uncle(X,Y); uncle(Y,X); siblings(X,Y)")      
 
 
+import re
+
 class Prompts:
     def __init__(self):
         # a list of possible statement patterns
-        # each pattern has ? to indicate the blanks in the sentence pattern
-        # for simplicity no punctuation
-        # TODO: can you help me, double check if this is complete
-        #       if it is, you can delete this thanks (zry)
         self.statements = [
-                        "? and ? are siblings",
-                        "? is the sister of ?",
-                        "? is the mother of ?",
-                        "? is the child of ?",
-                        "? is the daugher of ?",
-                        "? is the brother of ?",
-                        "? and ? are the parents of ?",
-                        "? is the uncle of ?",
-                        "? is the father of ?",
-                        "? is the grand father of ?",
-                        "?, ? and ? are the children of ?",
-                        "? is the son of ?",
-                        "? is the aunt of ?"
+            "? and ? are siblings",
+            "? is the sister of ?",
+            "? is the mother of ?",
+            "? is the child of ?",
+            "? is the daugher of ?",
+            "? is the brother of ?",
+            "? and ? are the parents of ?",
+            "? is the uncle of ?",
+            "? is the father of ?",
+            "? is the grand father of ?",
+            "?, ? and ? are the children of ?",
+            "? is the son of ?",
+            "? is the aunt of ?"
         ]
         
-        # a list of possible queestion patterns
-        # same rules for statement patterns 
-        # TODO: can you help me, double check if this is complete
-        #       if it is, you can delete this thanks (zry)
+        # a list of possible question patterns
         self.questions = [
-                        "Are ? and ? siblings"
-                        "Is ? a sister of ?"
-                        "Is ? a brother of ?"
-                        "Is ? the mother of ?"
-                        "Is ? the father of ?"
-                        "Are ? and ? the parents of ?"
-                        "Is ? the grandmother of ?"
-                        "Is ? a daughter of ?"
-                        "Is ? a son of ?"
-                        "Is ? a child of ?"
-                        "Are ?, ? and ? children of ?"
-                        "Is ? an uncle of ?"
-                        "Who are the siblings of ?"
-                        "Who are the sisters of ?"
-                        "Who is the mother of ?"
-                        "Who is the father of ?"
-                        "Who are the parents of ?"
-                        "Is ? a grandfather of ?"
-                        "Who are the daughters of ?"
-                        "Who are the sons of ?"
-                        "Is ? an aunt of ?"
-                        "Are ? and ? relatives"    
+            "Are ? and ? siblings",
+            "Is ? a sister of ?",
+            "Is ? a brother of ?",
+            "Is ? the mother of ?",
+            "Is ? the father of ?",
+            "Are ? and ? the parents of ?",
+            "Is ? the grandmother of ?",
+            "Is ? a daughter of ?",
+            "Is ? a son of ?",
+            "Is ? a child of ?",
+            "Are ?, ? and ? children of ?",
+            "Is ? an uncle of ?",
+            "Who are the siblings of ?",
+            "Who are the sisters of ?",
+            "Who is the mother of ?",
+            "Who is the father of ?",
+            "Who are the parents of ?",
+            "Is ? a grandfather of ?",
+            "Who are the daughters of ?",
+            "Who are the sons of ?",
+            "Is ? an aunt of ?",
+            "Are ? and ? relatives"
         ]
         
         # set of words that cannot be replaced with '?'
@@ -140,26 +135,24 @@ class Prompts:
 
     def verify(self, string):
         """checks if the string is a possible statement or question
-        
-        Remark. this can be removed or disregarded if not useful,
-                added for the sake of adding it.
-
         Remark. to use this, the string must be handled already,
-                that is, the variables or constants in the statement or question
-                are replaced with the ?        
-
+               that is, the variables or constants in the statement or question
+               are replaced with the ?        
         Args:
             string (str): the string 
-
         Returns:
             bool: (true) if string is in questions or statements, otherwise false
         """
-        return True if string in self.questions or string in self.statements else False
+        # Normalize the string by replacing variables with '?'
+        transformed_string = self.remove_vars_and_consts(string)
+        
+        # Check if the transformed string matches any predefined pattern
+        return any(transformed_string == pattern for pattern in self.questions + self.statements)
     
     def extract_keywords(self, questions):
         """
         Extract keywords from the list of questions.
-        This includes all words that should be not be changed to ?.
+        This includes all words that should not be changed to ?.
         """
         keywords = set()
         for question in questions:
@@ -169,10 +162,8 @@ class Prompts:
     
     def remove_vars_and_consts(self, string: str) -> str:
         """Replace all names and other words not in the predefined list with '?'.
-        
         Args:
             string (str): The input sentence containing names and relationships.
-        
         Returns:
             str: A transformed version of the string where unknown words are replaced with '?'.
         """
@@ -189,8 +180,3 @@ class Prompts:
                 transformed_words.append('?')
         
         return ' '.join(transformed_words)
-        
-prompts = Prompts()
-
-print(prompts.remove_vars_and_consts("Is Max a son of Obi"))
-        
