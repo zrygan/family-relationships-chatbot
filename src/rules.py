@@ -3,6 +3,7 @@ from imports import *
 class Family_Tree:
     def __init__(self):
         self.prolog = Prolog()
+        
         # the possible roles for every object
         self.roles = {
             1: "child",
@@ -29,6 +30,7 @@ class Family_Tree:
         # the value is an array of properties (roles)
         # example of an entry: "Max" : [1,3,12] 
         #                      Max is a child, son, and a man
+        # FIXME: idk if this is needed but it's here 
         self.objects = {}
         self.define_facts()
         
@@ -132,8 +134,11 @@ class Prompts:
                         "Is ? an aunt of ?"
                         "Are ? and ? relatives"    
         ]
+        
+        # set of words that cannot be replaced with '?'
+        self.allowed_words = set(self.extract_keywords(self.questions))
 
-    def verify(self, string -> str) -> bool:
+    def verify(self, string):
         """checks if the string is a possible statement or question
         
         Remark. this can be removed or disregarded if not useful,
@@ -151,13 +156,41 @@ class Prompts:
         """
         return True if string in self.questions or string in self.statements else False
     
-    def remove_vars_and_consts(string) -> str:
-        """Removed
-
-        Args:
-            string (_type_): _description_
-
-        Returns:
-            str: _description_
+    def extract_keywords(self, questions):
         """
+        Extract keywords from the list of questions.
+        This includes all words that should be not be changed to ?.
+        """
+        keywords = set()
+        for question in questions:
+            words = re.findall(r'\w+', question.lower())
+            keywords.update(words)
+        return keywords
+    
+    def remove_vars_and_consts(self, string: str) -> str:
+        """Replace all names and other words not in the predefined list with '?'.
+        
+        Args:
+            string (str): The input sentence containing names and relationships.
+        
+        Returns:
+            str: A transformed version of the string where unknown words are replaced with '?'.
+        """
+        words = string.split()
+        
+        transformed_words = []
+        
+        for word in words:
+            cleaned_word = re.sub(r'\W+', '', word).lower()
+            
+            if cleaned_word in self.allowed_words:
+                transformed_words.append(word)
+            else:
+                transformed_words.append('?')
+        
+        return ' '.join(transformed_words)
+        
+prompts = Prompts()
+
+print(prompts.remove_vars_and_consts("Is Max a son of Obi"))
         
