@@ -1,6 +1,7 @@
 from imports import *
 from rules import *
 
+from src.rules import Prompts
 # TODO: implement this method
 # initializes PROLOG
 # def initialize_prolog(): 
@@ -16,6 +17,8 @@ from rules import *
 # TODO: implement this method
 # adds a fact to the knowledge base
 # def handle_statement():
+
+prompt = Prompts()
 
 def main():
     # print a welcome message for the user FIXME: placeholder / also this is extremely optional
@@ -42,10 +45,19 @@ def main():
 
         # FIXME: (if the input contains a question mark according to the specs)
         # check if input is a question 
+        # check if input is a question FIXME: (if the input contains a question mark according to the specs)
+        if prompt.verify(user_input):
+            names = prompt.extract_names(user_input)
+            # print(names) //for debugging
 
         # ask PROLOG a query
 
         # print answer / YES / NO
+            # check if input is a question FIXME: (if the input contains a question mark according to the specs)
+            if "?" in user_input:
+                # ask PROLOG a query
+                pass
+                # print answer / YES / NO
 
 
 
@@ -64,10 +76,17 @@ def main():
         # check with PROLOG if input is feasible 
 
         # if YES, add to PROLOG knowledge base
+            # check if input is a statement (most likely ends with a period)
+            elif "." in user_input:
+                # check with PROLOG if input is feasible
+                pass
+                # if YES, add to PROLOG knowledge base
 
         # print prompt that chatbot learned a fact
+                # print prompt that chatbot learned a fact
 
         # if NO, print an error message
+                # if NO, print an error message
 
         user_input = input("> ").strip()
 
