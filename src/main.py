@@ -20,16 +20,13 @@ def handle_statement(family_tree, user_input, query):
     print("\nQuery: \n" + query + "\n") # FIXME: testing only
 
     # check with PROLOG if input is feasible TODO: ask query here !
-
     if 1 == True: #FIXME: implement ask query here !
         # add to knowledge base # TODO: 
         for assertion in assertions:
             family_tree.prolog.assertz(assertion)
-
             result = family_tree.prolog.query(query)
             for solution in result:
-                print(f"Query: {query}, Result: {solution}")
-
+                print(solution)
         return True
     else:
         return False
@@ -48,7 +45,7 @@ def main():
         # prompt user for input 
         print("\nHow may I enlighten you today?")
         # user_input = input("> ").strip() 
-        # query_input = input("> ").strip() 
+        query_input = input("> ").strip() 
 
         user_input = "Ei and Makoto are siblings."
         query_input = "siblings(Makoto, X)"
