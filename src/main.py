@@ -1,10 +1,19 @@
-from family_tree import *
 from imports import *
 
 # TODO: implement this method
+# initializes PROLOG
+# def initialize_prolog(): 
+
+# TODO: implement this method
+# initializes rules
+# def initialize_rules():
+
+# TODO: implement this method
+# asks a query
 # def ask_question():
 
 # TODO: implement this method
+# adds a fact to the knowledge base
 # def handle_statement():
 
 def main():
@@ -15,7 +24,7 @@ def main():
 
     # loop program FIXME: specs say it should loop but never when it terminates
     while True:
-        # prompt user for input (ie. "> ")
+        # prompt user for input 
         user_input = input("> ").strip()
 
             # check if input is a question FIXME: (if the input contains a question mark according to the specs)
