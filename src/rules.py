@@ -35,18 +35,23 @@ class Family_Tree:
         self.define_facts()
         
     def define_facts(self):
+        # X is a woman
+        self.prolog.assertz("woman(X)")
+        
+        # X is a man
+        self.prolog.assertz("man(X)")
+        
         # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
-        self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X\\= Y")
+        self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X \\= Y")
 
-        """
         # X is a child of Y     -> Y is a parent of X
         self.prolog.assertz("child(X,Y) :- parent(Y,X)")
         
         # X is a brother of Y -> X is a sibling of Y, X is a child of A, Y is a child of A (X and Y are not the same person), X is a man
-        self.prolog.assertz("brother(X,Y) :- child(X,A), child(Y,A), X\\=Y, man(X)")
+        self.prolog.assertz("brother(X,Y) :- child(X,A), child(Y,A), X \\= Y, man(X)")
 
-        # X is a sister of Y -> X is a sibling of Y,  X is a child of A, Y is a child of A (X and Y are not the same person), X is a man
-        self.prolog.assertz("sister(X,Y) :- child(X,A), child(Y,A), X\\=Y, woman(X)")
+        # X is a sister of Y -> X is a sibling of Y,  X is a child of A, Y is a child of A (X and Y are not the same person), X is a woman
+        self.prolog.assertz("sister(X,Y) :- child(X,A), child(Y,A), X \\= Y, woman(X)")
         
         # X is a son of Y       -> X is a child of Y,   X is a man
         self.prolog.assertz("son(X,Y) :- child(X,Y), man(X)")
@@ -67,7 +72,7 @@ class Family_Tree:
         self.prolog.assertz("father(X) :- man(X), child(Y,X)")
         
         # X is a parent of Y    -> Y is a child of X
-        self.prolog.assertz("parent(X,Y) :- child(Y,X)")
+        self.prolog.assertz("parent(X,Y)")
         
         # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
         self.prolog.assertz("grandparent(X) :- parent(X,Y), parent(Y,Z)")
@@ -88,7 +93,7 @@ class Family_Tree:
         #                          X is the aunt of Y;  Y is the aunt of X;     X is the uncle of Y;        Y is the uncle of X;
         #                          X and Y are siblings
         self.prolog.assertz("relatives(X,Y) :- grandfather(X,Y); grandfather(Y,X); parent(X,Y); parent(Y,X); aunt(X,Y); aunt(Y,X); uncle(X,Y); uncle(Y,X); siblings(X,Y)")      
-        """
+        
 import re
 
 class Prompts:
@@ -207,7 +212,6 @@ class Prompts:
         elif "is a sister of" in statement:
             assertions = [
                 f"sister{(names[0], names[1])}"
-                # FIXME: add fact
             ]
         elif "is the mother of" in statement:
             assertions = [
@@ -232,7 +236,6 @@ class Prompts:
         elif "is a brother of" in statement:
             assertions = [
                 f"brother{(names[0], names[1])}"
-                # FIXME: add fact
             ]
         elif "is the father of" in statement:
             assertions = [
@@ -240,7 +243,8 @@ class Prompts:
             ]
         elif "and" in statement and "are the parents of" in statement:
             assertions = [
-                # FIXME: add assertions
+                f"parent{(names[0], names[2])}"
+                f"parent{(names[1], names[2])}"
             ]
         elif "is the grandfather of" in statement:
             assertions = [
@@ -248,7 +252,8 @@ class Prompts:
             ]
         elif "and" in statement and "are children of" in statement:
             assertions = [
-                f"child{(names[0], names[i+1])}" for i in range(len(names)-1)
+                f"child{(names[0], names[2])}"
+                f"child{(names[1], names[2])}"
             ]
         elif "is a son of" in statement:
             assertions = [

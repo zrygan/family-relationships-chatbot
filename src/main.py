@@ -14,11 +14,11 @@ def handle_statement(family_tree, user_input):
     statement = prompts.remove_vars_and_consts(user_input)
     names = prompts.extract_names(user_input)
     assertions = prompts.get_assertion(user_input, names)
-
+    """
     print("Statement: %s" % statement)
     print("Names: %s" % names)
     print("Assertions: %s" % assertions)
-
+    """
     if True == True: # TODO: check validity of assertions here
         for assertion in assertions:
             family_tree.prolog.assertz(assertion)
@@ -26,6 +26,74 @@ def handle_statement(family_tree, user_input):
         return False
     
     return True
+
+def statement_testing():
+    family_tree = Family_Tree()
+    prompts = Prompts()
+
+    statements = [
+        "Finn and Jake are siblings.",
+        "Fiona is a sister of Cake.",
+        "Ei is the mother of Wanderer.",
+        "Citlali is the grandmother of Ororon.",
+        "Ash is a child of Delia.",
+        "Marceline is a daughter of Hunson.",
+        "IDontKnow is an uncle of Maybe.",
+        "Lincoln is a brother of Leni.",
+        "Norman is the father of Brendan.",
+        "Marshal and Lily are parents of Marvin.",
+        "Someone is a grandfather of somebody.",
+        "Haley, Alex, Luke are children of Phil.",
+        "Thor is a son of Odin.",
+        "Claire is an aunt of Lily.",
+    ]
+
+    queries = [
+        "siblings(Finn, Jake)",
+        "sister(Fiona, Cake)",
+        "mother(Ei, Wanderer)",
+        "grandmother(Citlali, Ororon)",
+        "child(Ash, Delia)",
+        "daughter(Marceline, Hunson)",
+        "uncle(IDontKnow, Maybe)",
+        "brother(Lincoln, Leni)",
+        "father(Norman, Brendan)",
+        "parent(Lily, Marvin)",
+        "grandfather(Someone, somebody)",
+        "child(Phil, Luke)",
+        "son(Thor, Odin)",
+        "aunt(Claire, Lily)"
+    ]
+
+    test_name = [
+        "siblings",
+        "sister",
+        "mother",
+        "grandmother",
+        "child",
+        "daughter",
+        "uncle",
+        "brother",
+        "father",
+        "parents",
+        "grandfather",
+        "children",
+        "son",
+        "aunt"
+    ]
+
+    for i in range(0, len(queries)):
+        print(f"\nTesting statement: {statements[i]}")
+        handle_statement(family_tree, statements[i])
+
+        results = list(prolog.query(queries[i]))
+        try:
+            if results:
+                print(results)
+            else:
+                print("No results found.")
+        except Exception as e:
+            print(f"Error querying: {results}\n{e}")
 
 def main():
     # print a welcome message for the user
@@ -44,8 +112,10 @@ def main():
         query_input = input("> ").strip() 
 
         #FIXME: test
-        user_input = "Lyney and Lynette are siblings."
-        query_input = "siblings(Lyney, X)"
+        user_input = "Alex is a daughter of Claire."
+        query_input = "daughter(Alex, X)"
+
+        statement_testing()
 
         # exiting chatbot
         if user_input.lower() == "exit":
