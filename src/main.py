@@ -12,7 +12,13 @@ from src.rules import Prompts
 
 # TODO: implement this method
 # asks a query
-# def ask_question():
+def ask_question(input : str, f: Family_Tree):
+    names = prompt.extract_names(input)
+    query = prompt.get_query(input, names)
+    if query != None:
+        return f.prolog.assertz(query)
+    else:
+        return "I don't know."
 
 # TODO: implement this method
 # adds a fact to the knowledge base
@@ -28,7 +34,6 @@ def main():
 
     # initializing 
     family_tree = Family_Tree()
-    prompts = Prompts()
 
     # loop chatbot
     while True:
@@ -40,40 +45,29 @@ def main():
             print("\nFarewell...")
             break
 
-        user_input = "Ei is a sister of Makoto." # FIXME: for testing only
-
+        #user_input = "Ei is a sister of Makoto." # FIXME: for testing only
 
         # FIXME: (if the input contains a question mark according to the specs)
         # check if input is a question 
         # check if input is a question FIXME: (if the input contains a question mark according to the specs)
         if prompt.verify(user_input):
-            names = prompt.extract_names(user_input)
-            # print(names) //for debugging
-
-        # ask PROLOG a query
-
-        # print answer / YES / NO
             # check if input is a question FIXME: (if the input contains a question mark according to the specs)
             if "?" in user_input:
                 # ask PROLOG a query
-                pass
                 # print answer / YES / NO
+                print(ask_question(user_input, family_tree))
 
+            # check if input is a statement (most likely ends with a period)
+            elif "." in user_input:
 
+                # check with PROLOG if input is feasible
+                pass
 
+                    # if YES, add to PROLOG knowledge base
 
+                        # print prompt that chatbot learned a fact
 
-        # check if input is a statement (most likely ends with a period)
-        elif "." in user_input:
-
-            # check with PROLOG if input is feasible
-            pass
-
-                # if YES, add to PROLOG knowledge base
-
-                    # print prompt that chatbot learned a fact
-
-                # if NO, print an error message
+                    # if NO, print an error message
 
 if __name__ == "__main__":
     main()
