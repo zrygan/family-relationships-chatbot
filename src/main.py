@@ -15,6 +15,10 @@ def handle_statement(family_tree, user_input):
     names = prompts.extract_names(user_input)
     assertions = prompts.get_assertion(user_input, names)
 
+    print("Statement: %s" % statement)
+    print("Names: %s" % names)
+    print("Assertions: %s" % assertions)
+
     if True == True: # TODO: check validity of assertions here
         for assertion in assertions:
             family_tree.prolog.assertz(assertion)
@@ -87,9 +91,7 @@ def main():
                 try:
                     results = list(prolog.query(query_input))
                     if results:
-                        print("Results:")
-                        for result in results:
-                            print(result)
+                        print(results)
                     else:
                         print("No results found.")
                 except Exception as e:

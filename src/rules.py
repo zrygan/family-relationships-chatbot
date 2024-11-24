@@ -35,12 +35,13 @@ class Family_Tree:
         self.define_facts()
         
     def define_facts(self):
+        # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
+        self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X\\= Y")
+
+        """
         # X is a child of Y     -> Y is a parent of X
         self.prolog.assertz("child(X,Y) :- parent(Y,X)")
         
-        # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
-        self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X\\=Y")
-
         # X is a brother of Y -> X is a sibling of Y, X is a child of A, Y is a child of A (X and Y are not the same person), X is a man
         self.prolog.assertz("brother(X,Y) :- child(X,A), child(Y,A), X\\=Y, man(X)")
 
@@ -87,7 +88,7 @@ class Family_Tree:
         #                          X is the aunt of Y;  Y is the aunt of X;     X is the uncle of Y;        Y is the uncle of X;
         #                          X and Y are siblings
         self.prolog.assertz("relatives(X,Y) :- grandfather(X,Y); grandfather(Y,X); parent(X,Y); parent(Y,X); aunt(X,Y); aunt(Y,X); uncle(X,Y); uncle(Y,X); siblings(X,Y)")      
-
+        """
 import re
 
 class Prompts:
@@ -201,7 +202,7 @@ class Prompts:
         assertions = []
         if "and" in statement and "are siblings" in statement:
             assertions = [
-                f"sibling{(names[0], names[1])}",
+                f"siblings{(names[0], names[1])}",
             ]
         elif "is a sister of" in statement:
             assertions = [
