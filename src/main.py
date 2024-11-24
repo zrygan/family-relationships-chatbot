@@ -15,8 +15,15 @@ from src.rules import Prompts
 def ask_question(input : str, f: Family_Tree):
     names = prompt.extract_names(input)
     query = prompt.get_query(input, names)
+    print(query)
     if query != None:
-        return f.prolog.assertz(query)
+        print("lol")
+        result = f.prolog.query(query)
+        print("lol")
+
+        """for soln in result:
+            print(soln)"""
+        return "WIP"
     else:
         return "I don't know."
 

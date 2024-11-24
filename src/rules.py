@@ -37,50 +37,44 @@ class Family_Tree:
     def define_facts(self):
         # X is a child of Y     -> Y is a parent of X
         self.prolog.assertz("child(X,Y) :- parent(Y,X)")
-        
+
         # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
         self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X\\=Y")
-        
+
         # X is a son of Y       -> X is a child of Y,   X is a man
         self.prolog.assertz("son(X,Y) :- child(X,Y), man(X)")
-        
+
         # X is a daughter of Y  -> X is a child of Y,   Y is a woman
         self.prolog.assertz("daughter(X,Y) :- child(X,Y), woman(X)")
-        
+
         # X is a mother         -> X is a woman,        X is a parent of Y
         self.prolog.assertz("mother(X) :- woman(X), parent(X,Y)")
-        
-        # X is a mother         -> X is a woman,        Y is a child of X
-        self.prolog.assertz("mother(X) :- woman(X), child(Y,X)")
-        
+
         # X is a father         -> X is a man,          X is a parent of Y
         self.prolog.assertz("father(X) :- man(X), parent(X,Y)")
-        
-        # X is a father         -> X is a man,          Y is a child of X
-        self.prolog.assertz("father(X) :- man(X), child(Y,X)")
-        
+
         # X is a parent of Y    -> Y is a child of X
         self.prolog.assertz("parent(X,Y) :- child(Y,X)")
-        
+
         # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
         self.prolog.assertz("grandparent(X) :- parent(X,Y), parent(Y,Z)")
-        
+
         # X is a gfather of Z   -> X is a gparent,      X is a man,             X is a parent of Y,         Y is a parent of Z
         self.prolog.assertz("grandfather(X,Z) :- grandparent(X), man(X), parent(X,Y), parent(Y,Z)")
-        
+
         # X is a gmother of Z   -> X is a gparent,      X is a woman,           X is a parent of Y,         Y is a parent of Z
         self.prolog.assertz("grandmother(X,Z) :- grandparent(X), woman(X), parent(X,Y), parent(Y,Z)")
-        
+
         # X is an aunt of Z     -> X is a woman,        X, Y are siblings,      Y is a parent of Z
         self.prolog.assertz("aunt(X,Z) :- woman(X), siblings(X,Y), parent(Y,Z)")
-        
+
         # X is an uncle of Z    -> X is a man,          X, Y are siblings,      Y is a parent of Z
         self.prolog.assertz("uncle(X,Z) :- man(X), siblings(X,Y), parent(Y,Z)")
-        
+
         # X and Y are relatives -> X is a gfather of Y; Y is a gfather of X;    X is a parent of Y;         Y is a parent of X;
         #                          X is the aunt of Y;  Y is the aunt of X;     X is the uncle of Y;        Y is the uncle of X;
         #                          X and Y are siblings
-        self.prolog.assertz("relatives(X,Y) :- grandparent(X,Y); grandparent(Y,X); parent(X,Y); parent(Y,X); aunt(X,Y); aunt(Y,X); uncle(X,Y); uncle(Y,X); siblings(X,Y)")
+        self.prolog.assertz("relatives(X,Y) :- grandfather(X,Y); grandfather(Y,X); grandmother(X,Y); grandmother(Y,X); parent(X,Y); parent(Y,X); aunt(X,Y); aunt(Y,X); uncle(X,Y); uncle(Y,X); siblings(X,Y)")
 
 
 import re
