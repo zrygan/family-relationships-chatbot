@@ -93,7 +93,7 @@ class Prompts:
             "? is the sister of ?",
             "? is the mother of ?",
             "? is the child of ?",
-            "? is the daugher of ?",
+            "? is the daughter of ?",
             "? is the brother of ?",
             "? and ? are the parents of ?",
             "? is the uncle of ?",
@@ -180,3 +180,14 @@ class Prompts:
                 transformed_words.append('?')
         
         return ' '.join(transformed_words)
+
+    def extract_names(self, string: str):
+        string = string.split()
+        names = []
+        for word in string:
+            cleaned_word = re.sub(r'\W+', '', word).lower()
+            if cleaned_word not in self.allowed_words:
+                if "?" in word or "." in word:
+                    word = word[:-1]
+                names.append(word)
+        return names

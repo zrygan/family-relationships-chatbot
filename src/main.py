@@ -1,5 +1,5 @@
 from imports import *
-
+from src.rules import Prompts
 # TODO: implement this method
 # initializes PROLOG
 # def initialize_prolog(): 
@@ -16,6 +16,8 @@ from imports import *
 # adds a fact to the knowledge base
 # def handle_statement():
 
+prompt = Prompts()
+
 def main():
     # print a welcome message for the user FIXME: placeholder / also this is extremely optional
     print("Greetings! I'm the AncesTree!") # this is so adorable HAHAHAH (zry)
@@ -27,21 +29,26 @@ def main():
         # prompt user for input 
         user_input = input("> ").strip()
 
+        # check if input is a question FIXME: (if the input contains a question mark according to the specs)
+        if prompt.verify(user_input):
+            names = prompt.extract_names(user_input)
+            # print(names) //for debugging
+
             # check if input is a question FIXME: (if the input contains a question mark according to the specs)
-
+            if "?" in user_input:
                 # ask PROLOG a query
-
-                    # print answer / YES / NO
+                pass
+                # print answer / YES / NO
 
             # check if input is a statement (most likely ends with a period)
+            elif "." in user_input:
+                # check with PROLOG if input is feasible
+                pass
+                # if YES, add to PROLOG knowledge base
 
-                # check with PROLOG if input is feasible 
+                # print prompt that chatbot learned a fact
 
-                    # if YES, add to PROLOG knowledge base
-
-                        # print prompt that chatbot learned a fact
-
-                    # if NO, print an error message
+                # if NO, print an error message
 
 if __name__ == "__main__":
     main()
