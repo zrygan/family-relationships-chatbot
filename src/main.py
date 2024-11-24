@@ -28,14 +28,11 @@ def handle_statement(family_tree, user_input, query):
 
             result = family_tree.prolog.query(query)
             for solution in result:
-                print(solution)
+                print(f"Query: {query}, Result: {solution}")
 
         return True
     else:
         return False
-
-        
-
 
 def main():
     # print a welcome message for the user FIXME: placeholder / also this is extremely optional
@@ -50,8 +47,11 @@ def main():
     while True:
         # prompt user for input 
         print("\nHow may I enlighten you today?")
-        user_input = input("> ").strip() 
-        query_input = input("> ").strip() 
+        # user_input = input("> ").strip() 
+        # query_input = input("> ").strip() 
+
+        user_input = "Ei and Makoto are siblings."
+        query_input = "siblings(Makoto, X)"
 
         # exiting chatbot
         if user_input.lower() == "exit":
@@ -89,15 +89,14 @@ def main():
 
 
         # check if input is a statement 
-            elif "." in user_input:
-                # check with PROLOG if input is valid
-                if handle_statement(family_tree, user_input, query_input) == True: # input is valid, added to the knowledge base
-                    print("\nThe AncesTree has absorbed knowledge!")
-                else: # input is contradictory, invalid input
-                    print("\nThe AncesTree deems this information contradictory...")
-            
+        elif user_input.endswith("."):
+            # check with PROLOG if input is valid
+            if handle_statement(family_tree, user_input, query_input) == True: # input is valid, added to the knowledge base
+                print("\nThe AncesTree has absorbed knowledge!")
+            else: # input is contradictory, invalid input
+                print("\nThe AncesTree deems information contradictory...")
         else:
-            print("\nThe AncesTree is unable to comprehend your message.")
+            print("\nThe AncesTree is unable to comprehend your message...")
 
 if __name__ == "__main__":
     main()
