@@ -1,4 +1,5 @@
 from imports import *
+from rules import *
 
 # TODO: implement this method
 # initializes PROLOG
@@ -22,26 +23,42 @@ def main():
     print("I house the knowledge that roots your family's connections.")
     print("How may I enlighten you today?")
 
-    # loop program FIXME: specs say it should loop but never when it terminates
+    # initializing 
+    family_tree = Family_Tree()
+    prompts = Prompts()
+
+    # loop chatbot
     while True:
         # prompt user for input 
-        user_input = input("> ").strip()
+        # user_input = input("> ").strip()
+        user_input = "Ei is a sister of Makoto"
 
-            # check if input is a question FIXME: (if the input contains a question mark according to the specs)
 
-                # ask PROLOG a query
+        # FIXME: (if the input contains a question mark according to the specs)
+        # check if input is a question 
 
-                    # print answer / YES / NO
+        # ask PROLOG a query
 
-            # check if input is a statement (most likely ends with a period)
+        # print answer / YES / NO
 
-                # check with PROLOG if input is feasible 
 
-                    # if YES, add to PROLOG knowledge base
 
-                        # print prompt that chatbot learned a fact
 
-                    # if NO, print an error message
+
+
+        # FIXME:
+        # check if input is a statement (most likely ends with a period)
+        if user_input.endswith("."):
+            # handle statement
+            family_tree.add_fact(user_input)
+            print(prompts.learned_fact_prompt)
+        # check with PROLOG if input is feasible 
+
+        # if YES, add to PROLOG knowledge base
+
+        # print prompt that chatbot learned a fact
+
+        # if NO, print an error message
 
 if __name__ == "__main__":
     main()
