@@ -11,25 +11,34 @@ def handle_statement(family_tree, user_input, query):
     prompts = Prompts()
     
     # transform statement into an assertion
-    statement = prompts.remove_vars_and_consts(user_input) # getting the kind of statement (ex. "? is a sister of ?")
-    names = prompts.extract_names(user_input) # getting the names involved (ex. ["Ei", "Makoto"])
-    assertions = prompts.get_assertion(statement, names) # formatting the statement as PROLOG assertions
+    statement = prompts.remove_vars_and_consts(user_input)  # getting the kind of statement (ex. "? is a sister of ?")
+    names = prompts.extract_names(user_input)  # getting the names involved (ex. ["Ei", "Makoto"])
+    assertions = prompts.get_assertion(statement, names)  # formatting the statement as PROLOG assertions
 
-    print("\nAssertion:") # FIXME: testing only
-    print(assertions) # FIXME: testing only
-    print("\nQuery: \n" + query + "\n") # FIXME: testing only
+    # FIXME: testing only
+    print("\nStatements:")
+    print(statement) 
+    print("\nNames:")
+    print(names)
+    print("\nAssertion:")  
+    print(assertions) 
+    print("\nQuery: \n" + query)  
 
-    # check with PROLOG if input is feasible TODO: ask query here !
-    if 1 == True: #FIXME: implement ask query here !
-        # add to knowledge base # TODO: 
+    # check with PROLOG if input is feasible TODO: ask query here!
+    if 1 == True: #FIXME: implement ask query here!
+        # add to knowledge base # TODO:
         for assertion in assertions:
             family_tree.prolog.assertz(assertion)
-            result = family_tree.prolog.query(query)
-            for solution in result:
-                print(solution)
-        return True
-    else:
+        
+        query = family_tree.prolog.query('siblings(Lyney, X)')
+
+        for soln in query:
+            print(soln)
+    else:   
         return False
+
+    return True
+
 
 def main():
     # print a welcome message for the user FIXME: placeholder / also this is extremely optional
@@ -44,11 +53,11 @@ def main():
     while True:
         # prompt user for input 
         print("\nHow may I enlighten you today?")
-        # user_input = input("> ").strip() 
+        user_input = input("> ").strip() 
         query_input = input("> ").strip() 
 
-        user_input = "Ei and Makoto are siblings."
-        query_input = "siblings(Makoto, X)"
+        user_input = "Lyney and Lynette are siblings."
+        query_input = "siblings(Lyney, X)"
 
         # exiting chatbot
         if user_input.lower() == "exit":
