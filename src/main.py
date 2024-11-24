@@ -63,32 +63,17 @@ def main():
 
 
 
+        # check if input is a statement (most likely ends with a period)
+        elif "." in user_input:
 
-        # FIXME: (most likely ends with a period)
-        # check if input is a statement 
-        if user_input.endswith("."):
-            # handle statement
-            cleaned_input = prompts.remove_vars_and_consts(user_input)
-            extracted_input = prompts.extract_keywords(user_input)
+            # check with PROLOG if input is feasible
+            pass
 
-            print(cleaned_input)
-            print(extracted_input)
-        # check with PROLOG if input is feasible 
-
-        # if YES, add to PROLOG knowledge base
-            # check if input is a statement (most likely ends with a period)
-            elif "." in user_input:
-                # check with PROLOG if input is feasible
-                pass
                 # if YES, add to PROLOG knowledge base
 
-        # print prompt that chatbot learned a fact
-                # print prompt that chatbot learned a fact
+                    # print prompt that chatbot learned a fact
 
-        # if NO, print an error message
                 # if NO, print an error message
-
-        user_input = input("> ").strip()
 
 if __name__ == "__main__":
     main()
