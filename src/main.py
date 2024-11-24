@@ -30,8 +30,14 @@ def main():
     # loop chatbot
     while True:
         # prompt user for input 
-        # user_input = input("> ").strip()
-        user_input = "Ei is a sister of Makoto"
+        user_input = input("> ").strip() 
+
+        # exiting chatbot
+        if user_input.lower() == "exit":
+            print("\nFarewell...")
+            break
+
+        user_input = "Ei is a sister of Makoto." # FIXME: for testing only
 
 
         # FIXME: (if the input contains a question mark according to the specs)
@@ -46,12 +52,15 @@ def main():
 
 
 
-        # FIXME:
-        # check if input is a statement (most likely ends with a period)
+        # FIXME: (most likely ends with a period)
+        # check if input is a statement 
         if user_input.endswith("."):
             # handle statement
-            family_tree.add_fact(user_input)
-            print(prompts.learned_fact_prompt)
+            cleaned_input = prompts.remove_vars_and_consts(user_input)
+            extracted_input = prompts.extract_keywords(user_input)
+
+            print(cleaned_input)
+            print(extracted_input)
         # check with PROLOG if input is feasible 
 
         # if YES, add to PROLOG knowledge base
@@ -59,6 +68,8 @@ def main():
         # print prompt that chatbot learned a fact
 
         # if NO, print an error message
+
+        user_input = input("> ").strip()
 
 if __name__ == "__main__":
     main()
