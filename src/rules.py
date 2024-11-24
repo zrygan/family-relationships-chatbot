@@ -48,16 +48,13 @@ class Family_Tree:
         self.prolog.assertz("daughter(X,Y) :- child(X,Y), woman(X)")
 
         # X is a mother         -> X is a woman,        X is a parent of Y
-        self.prolog.assertz("mother(X) :- woman(X), parent(X,Y)")
+        self.prolog.assertz("mother(X) :- woman(X), parent(X,_)")
 
         # X is a father         -> X is a man,          X is a parent of Y
-        self.prolog.assertz("father(X) :- man(X), parent(X,Y)")
-
-        # X is a parent of Y    -> Y is a child of X
-        self.prolog.assertz("parent(X,Y) :- child(Y,X)")
+        self.prolog.assertz("father(X) :- man(X), parent(X,_)")
 
         # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
-        self.prolog.assertz("grandparent(X) :- parent(X,Y), parent(Y,Z)")
+        self.prolog.assertz("grandparent(X) :- parent(X,Y), parent(Y,_)")
 
         # X is a gfather of Z   -> X is a gparent,      X is a man,             X is a parent of Y,         Y is a parent of Z
         self.prolog.assertz("grandfather(X,Z) :- grandparent(X), man(X), parent(X,Y), parent(Y,Z)")
@@ -100,17 +97,17 @@ class Prompts:
         
         # a list of possible question patterns
         self.questions = [
-            "Are ? and ? siblings",
+            "Are ? and ? siblings?",
             "Is ? a sister of ?",
             "Is ? a brother of ?",
             "Is ? the mother of ?",
             "Is ? the father of ?",
             "Are ? and ? the parents of ?",
-            "Is ? the grandmother of ?",
+            "Is ? a grandmother of ?",
             "Is ? a daughter of ?",
             "Is ? a son of ?",
             "Is ? a child of ?",
-            "Are ?, ? and ? children of ?",
+            "Are ? ? and ? children of ?",
             "Is ? an uncle of ?",
             "Who are the siblings of ?",
             "Who are the sisters of ?",
@@ -123,7 +120,7 @@ class Prompts:
             "Who are the sons of ?",
             "Who are the children of ?",
             "Is ? an aunt of ?",
-            "Are ? and ? relatives"
+            "Are ? and ? relatives?"
         ]
         
         # set of words that cannot be replaced with '?'
@@ -182,63 +179,66 @@ class Prompts:
         for word in string:
             cleaned_word = re.sub(r'\W+', '', word).lower()
             if cleaned_word not in self.allowed_words:
-                names.append(cleaned_word)
+                if "?" in word or "." in word or "," in word:
+                    word = word[:-1]
+                names.append(word)
         return names
 
     def get_query(self, string: str, names):
+        names = [name.lower() for name in names]
         if "Who" in string:
             if "are the daughters of" in string:
-                return f"daughter(X, {names[0]})"
+                return "daughters", f"daughter(X, {names[0]})"
             elif "are the sons of" in string:
-                return f"son(X, {names[0]})"
+                return "sons", f"son(X, {names[0]})"
             elif "are the children of" in string:
-                return f"child(X, {names[0]})"
+                return "children", f"child(X, {names[0]})"
             elif "are the siblings of" in string:
-                return f"siblings(X, {names[0]})"
+                return "siblings", f"siblings(X, {names[0]})"
             elif "are the sisters of" in string:
-                return f"siblings(X, {names[0]}), woman(X)"
+                return "sisters", f"siblings(X, {names[0]}), woman(X)"
             elif "are the brothers of" in string:
-                return f"siblings(X, {names[0]}), man(X)"
+                return "brothers", f"siblings(X, {names[0]}), man(X)"
             elif "is the mother of" in string:
-                return f"parent(X, {names[0]}), woman(X)"
+                return "mother", f"parent(X, {names[0]}), woman(X)"
             elif "is the father of" in string:
-                return f"parent(X, {names[0]}), man(X)"
+                return "father", f"parent(X, {names[0]}), man(X)"
             elif "are the parents of" in string:
-                return f"parent(X, {names[0]})"
+                return "parents", f"parent(X, {names[0]})"
         else:
             if "Is" in string:
                 if "a sister of" in string:
-                    return f"siblings({names[0]}, {names[1]}), woman({names[0]})"
+                    return "a sister", f"siblings({names[0]}, {names[1]}), woman({names[0]})"
                 elif "a brother of" in string:
-                    return f"siblings({names[0]}, {names[1]}), man({names[0]})"
+                    return "a brother", f"siblings({names[0]}, {names[1]}), man({names[0]})"
                 elif "the mother of" in string:
-                    return f"parent({names[0]}, {names[1]}), woman({names[0]})"
+                    return "the mother", f"parent({names[0]}, {names[1]}), woman({names[0]})"
                 elif "the father of" in string:
-                    return f"parent({names[0]}, {names[1]}), man({names[0]})"
+                    return "the father", f"parent({names[0]}, {names[1]}), man({names[0]})"
                 elif "the grandmother of" in string:
-                    return f"grandmother({names[0]}, {names[1]})"
+                    return "a grandmother", f"grandmother({names[0]}, {names[1]})"
                 elif "a daughter of" in string:
-                    return f"daughter({names[0]}, {names[1]})"
+                    return "a daughter", f"daughter({names[0]}, {names[1]})"
                 elif "a son of" in string:
-                    return f"son({names[0]}, {names[1]})"
+                    return "a son", f"son({names[0]}, {names[1]})"
                 elif "a child of" in string:
-                    return f"child({names[0]}, {names[1]})"
+                    return "a child", f"child({names[0]}, {names[1]})"
                 elif "an uncle of" in string:
-                    return f"uncle({names[0]}, {names[1]})"
+                    return "an uncle", f"uncle({names[0]}, {names[1]})"
                 elif "a grandfather of" in string:
-                    return f"grandfather({names[0]}, {names[1]})"
+                    return "a grandfather",f"grandfather({names[0]}, {names[1]})"
                 elif "an aunt of" in string:
-                    return f"aunt({names[0]}, {names[1]})"
+                    return "an aunt",f"aunt({names[0]}, {names[1]})"
             elif "Are" in string:
                 if len(names) == 4:
                     if "children of" in string:
-                        return f"child({names[0]}, {names[3]}), child({names[1]}, {names[3]}), child({names[2]}, {names[3]})"
+                        return "children",f"child({names[0]}, {names[3]}), child({names[1]}, {names[3]}), child({names[2]}, {names[3]})"
                 elif len(names) == 3:
                     if "the parents of" in string:
-                        return f"parent({names[0]}, {names[2]}), parent({names[1]}, {names[2]})"
+                        return "parents",f"parent({names[0]}, {names[2]}), parent({names[1]}, {names[2]})"
                 else:
                     if "siblings" in string:
-                        return f"siblings({names[0]}, {names[1]})"
+                        return "siblings",f"siblings({names[0]}, {names[1]})"
                     elif "relatives" in string:
-                        return f"relatives({names[0]}, {names[1]})"
-        return None
+                        return "relatives",f"relatives({names[0]}, {names[1]})"
+        return None, None

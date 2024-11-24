@@ -14,16 +14,60 @@ from src.rules import Prompts
 # asks a query
 def ask_question(input : str, f: Family_Tree):
     names = prompt.extract_names(input)
-    query = prompt.get_query(input, names)
-    print(query)
-    if query != None:
-        print("lol")
-        result = f.prolog.query(query)
-        print("lol")
+    relation, query = prompt.get_query(input, names)
+    if query is not None:
+        n = len(names)
+        if "Is" in input:
+            result = bool(list(Prolog.query(query)))
+            if result:
+                return f"Yes, {names[0]} is {relation} of {names[1]}."
+            else:
+                return f"No, {names[0]} is not {relation} of {names[1]}."
+        elif "Are" in input:
+            result = bool(list(Prolog.query(query)))
+            if result:
+                if n == 4:
+                    return (f"Yes, {names[0]}, {names[1]}, and {names[2]}"
+                            f" are the {relation} of {names[3]}.")
+                elif n == 3:
+                    return (f"Yes, {names[0]} and {names[1]}"
+                            f" are the {relation} of {names[2]}.")
+                else:
+                    return f"Yes, {names[0]} and {names[1]} are {relation}."
+            else:
+                if n == 4:
+                    return (f"No, {names[0]}, {names[1]}, and {names[2]}"
+                            f" are not the {relation} of {names[3]}.")
+                elif n == 3:
+                    return (f"No, {names[0]} and {names[1]}"
+                            f" are not the {relation} of {names[2]}.")
+                else:
+                    return f"No, {names[0]} and {names[1]} are not {relation}."
+        else:
+            people = list(Prolog.query(query))
+            ppl_set = {person['X'].capitalize() for person in people}
+            people = list(ppl_set)
+            result = ""
+            n = len(people)
+            if n > 2:
+                for i in range(n):
+                    if i < n - 1:
+                        result += f"{people[i]}, "
+                    else:
+                        result += f"and {people[i]}"
+                result += f" are the {relation} of {names[0]}."
+            elif n == 2:
+                result += f"{people[0]} and {people[1]} are the {relation} of {names[0]}."
+            elif n == 1:
+                if relation.endswith("s"):
+                    relation = relation[:-1]
+                elif relation == "children":
+                    relation = "child"
+                result += f"{people[0]} is the {relation} of {names[0]}."
+            else:
+                result += f"{names[0]} has no {relation}."
+            return result
 
-        """for soln in result:
-            print(soln)"""
-        return "WIP"
     else:
         return "I don't know."
 
@@ -39,7 +83,7 @@ def main():
     print("I house the knowledge that roots your family's connections.")
     print("How may I enlighten you today?")
 
-    # initializing 
+    # initializing
     family_tree = Family_Tree()
 
     # loop chatbot
@@ -59,7 +103,7 @@ def main():
         # check if input is a question FIXME: (if the input contains a question mark according to the specs)
         if prompt.verify(user_input):
             # check if input is a question FIXME: (if the input contains a question mark according to the specs)
-            if "?" in user_input:
+            if user_input.endswith("?"):
                 # ask PROLOG a query
                 # print answer / YES / NO
                 print(ask_question(user_input, family_tree))
