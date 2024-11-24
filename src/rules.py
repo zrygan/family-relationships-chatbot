@@ -199,64 +199,62 @@ class Prompts:
     
     def get_assertion(self, statement, names):
         assertions = []
-
         if "and" in statement and "are siblings" in statement:
             assertions = [
-                f"siblings({names[0]}, {names[1]})"
+                f"sibling{(names[0], names[1])}",
             ]
         elif "is a sister of" in statement:
             assertions = [
-                f"sister({names[0]}, {names[1]})"
+                f"sister{(names[0], names[1])}"
+                # FIXME: add fact
             ]
         elif "is the mother of" in statement:
             assertions = [
-                f"mother({names[0]}, {names[1]})"
+                f"mother{(names[0], names[1])}"
             ]
         elif "is a grandmother of" in statement:
             assertions = [
-                f"grandmother({names[0]}, {names[1]})"
+                f"grandmother{(names[0], names[1])}"
             ]
         elif "is a child of" in statement:
             assertions = [
-                f"child({names[0]}, {names[1]})"
+                f"child{(names[0], names[1])}"
             ]
         elif "is a daughter of" in statement:
             assertions = [
-                f"daughter({names[0]}, {names[1]})"
+                f"daughter{(names[0], names[1])}"
             ]
         elif "is an uncle of" in statement:
             assertions = [
-                f"uncle({names[0]}, {names[1]})"
+                f"uncle{(names[0], names[1])}"
             ]
         elif "is a brother of" in statement:
             assertions = [
-                f"brother({names[0]}, {names[1]})"
+                f"brother{(names[0], names[1])}"
+                # FIXME: add fact
             ]
         elif "is the father of" in statement:
             assertions = [
-                f"father({names[0]}, {names[1]})"
+                f"father{(names[0], names[1])}"
             ]
         elif "and" in statement and "are the parents of" in statement:
             assertions = [
-                f"parent({names[0]}, {names[2]})",
-                f"parent({names[1]}, {names[2]})"
+                # FIXME: add assertions
             ]
         elif "is the grandfather of" in statement:
             assertions = [
-                f"grandfather({names[0]}, {names[1]})"
+                f"grandfather{(names[0], names[1])}"
             ]
         elif "and" in statement and "are children of" in statement:
             assertions = [
-                f"child({names[0]}, {names[2]})",
-                f"child({names[1]}, {names[2]})"
+                f"child{(names[0], names[i+1])}" for i in range(len(names)-1)
             ]
         elif "is a son of" in statement:
             assertions = [
-                f"son({names[0]}, {names[1]})"
+                f"son{(names[0], names[1])}"
             ]
         elif "is an aunt of" in statement:
             assertions = [
-                f"aunt({names[0]}, {names[1]})"
+                f"aunt{(names[0], names[1])}"
             ]
-
         return assertions
