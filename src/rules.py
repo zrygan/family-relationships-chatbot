@@ -7,7 +7,7 @@ class Family_Tree:
         # the possible roles for every object
         self.roles = {
             1: "child",
-            2: "daugher",
+            2: "daughter",
             3: "son",
             4: "siblings",
             5: "sister",
@@ -191,3 +191,67 @@ class Prompts:
                     word = word[:-1]
                 names.append(word)
         return names
+    
+    def get_assertion(self, statement, names):
+        assertions = []
+
+        if "and" in statement and "are siblings" in statement:
+            assertions = [
+                f"sibling{(names[0], names[1])}",
+            ]
+        elif "is a sister of" in statement:
+            assertions = [
+                f"sister{(names[0], names[1])}"
+                # FIXME: add fact
+            ]
+        elif "is the mother of" in statement:
+            assertions = [
+                f"mother{(names[0], names[1])}"
+            ]
+        elif "is a grandmother of" in statement:
+            assertions = [
+                f"grandmother{(names[0], names[1])}"
+            ]
+        elif "is a child of" in statement:
+            assertions = [
+                f"child{(names[0], names[1])}"
+            ]
+        elif "is a daughter of" in statement:
+            assertions = [
+                f"daughter{(names[0], names[1])}"
+            ]
+        elif "is an uncle of" in statement:
+            assertions = [
+                f"uncle{(names[0], names[1])}"
+            ]
+        elif "is a brother of" in statement:
+            assertions = [
+                f"brother{(names[0], names[1])}"
+                # FIXME: add fact
+            ]
+        elif "is the father of" in statement:
+            assertions = [
+                f"father{(names[0], names[1])}"
+            ]
+        elif "and" in statement and "are the parents of" in statement:
+            assertions = [
+                # FIXME: add assertions
+            ]
+        elif "is the grandfather of" in statement:
+            assertions = [
+                f"grandfather{(names[0], names[1])}"
+            ]
+        elif "and" in statement and "are children of" in statement:
+            assertions = [
+                f"child{(names[0], names[i+1])}" for i in range(len(names)-1)
+            ]
+        elif "is a son of" in statement:
+            assertions = [
+                f"son{(names[0], names[1])}"
+            ]
+        elif "is an aunt of" in statement:
+            assertions = [
+                f"aunt{(names[0], names[1])}"
+            ]
+
+        return assertions
