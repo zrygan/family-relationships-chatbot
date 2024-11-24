@@ -40,6 +40,12 @@ class Family_Tree:
         
         # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
         self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X\\=Y")
+
+        # X is a brother of Y -> X is a sibling of Y, X is a child of A, Y is a child of A (X and Y are not the same person), X is a man
+        self.prolog.assertz("brother(X,Y) :- child(X,A), child(Y,A), X\\=Y, man(X)")
+
+        # X is a sister of Y -> X is a sibling of Y,  X is a child of A, Y is a child of A (X and Y are not the same person), X is a man
+        self.prolog.assertz("sister(X,Y) :- child(X,A), child(Y,A), X\\=Y, woman(X)")
         
         # X is a son of Y       -> X is a child of Y,   X is a man
         self.prolog.assertz("son(X,Y) :- child(X,Y), man(X)")
@@ -202,7 +208,6 @@ class Prompts:
         elif "is a sister of" in statement:
             assertions = [
                 f"sister{(names[0], names[1])}"
-                # FIXME: add fact
             ]
         elif "is the mother of" in statement:
             assertions = [
@@ -227,7 +232,6 @@ class Prompts:
         elif "is a brother of" in statement:
             assertions = [
                 f"brother{(names[0], names[1])}"
-                # FIXME: add fact
             ]
         elif "is the father of" in statement:
             assertions = [
@@ -235,16 +239,18 @@ class Prompts:
             ]
         elif "and" in statement and "are the parents of" in statement:
             assertions = [
-                # FIXME: add assertions
+                f"parent({names[0]}, {names[-1]})",
+                f"parent({names[1]}, {names[-1]})"
             ]
         elif "is the grandfather of" in statement:
             assertions = [
                 f"grandfather{(names[0], names[1])}"
             ]
-        elif "and" in statement and "are children of" in statement:
+        elif "and" in statement and "are children of" in statement:\
             assertions = [
-                f"child{(names[0], names[i+1])}" for i in range(len(names)-1)
-            ]
+                    f"child{(names[0], names[1])}",
+                    f"child({names[1], names[0]})"
+                ]
         elif "is a son of" in statement:
             assertions = [
                 f"son{(names[0], names[1])}"

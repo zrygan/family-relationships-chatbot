@@ -89,12 +89,12 @@ def main():
 
 
         # check if input is a statement 
-        elif user_input.endswith("."):
-            # check with PROLOG if input is valid
-            if handle_statement(family_tree, user_input, query_input) == True: # input is valid, added to the knowledge base
-                print("\nThe AncesTree has absorbed knowledge!")
-            else: # input is contradictory, invalid input
-                print("\nThe AncesTree deems this information contradictory...")
+            elif "." in user_input:
+                # check with PROLOG if input is valid
+                if handle_statement(family_tree, user_input, query_input) == True: # input is valid, added to the knowledge base
+                    print("\nThe AncesTree has absorbed knowledge!")
+                else: # input is contradictory, invalid input
+                    print("\nThe AncesTree deems this information contradictory...")
             
         else:
             print("\nThe AncesTree is unable to comprehend your message.")
