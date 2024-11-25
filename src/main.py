@@ -7,16 +7,16 @@ family_tree = Family_Tree()
 
 # asks a query
 def ask_question(input):
-    names = prompt.extract_names(input)
+    names = prompt.extract_names(input) # extracting names
     relation, query = prompt.get_query(input, names)
  
     # FIXME: debugging
+    """
     print("\nDebugging Query")
-    print("names: %s" % names)
-    print("relation: %s" % relation)
     print("Query: %s" % query)
     res = (list(family_tree.prolog.query(query)))
     print("Result: %s" % res)
+    """
 
     if query is not None:
         n = len(names)
@@ -100,7 +100,14 @@ def handle_statement(input):
     # transform statement into an assertion
     statement = prompt.remove_vars_and_consts(input)
     names = prompt.extract_names(input)
+    names = [name.lower() for name in names]
     assertions = prompt.get_assertion(input, names)
+
+    # FIXME:
+    """
+    print("\nDebugging Statement")
+    print("Assertion: %s" % assertions)
+    """
 
     """
     if not prompt.is_predicate_valid(assertions): # check if predicate exists
@@ -114,16 +121,21 @@ def handle_statement(input):
     if not assertions:
         return "I am unable to comprehend your statement..."
     else:  # valid assertion
-        for assertion in assertions:
+        try: 
+            for assertion in assertions:
                 family_tree.prolog.assertz(assertion)
 
                 #FIXME:
+                """
                 print("\nDebugging Statement")
                 print("Assertion: %s" % assertion)
-                result = list(family_tree.prolog.query("siblings(Lyney, Lynette)"))
-                print(result)
+                result = list(family_tree.prolog.query("siblings(ei, x)"))
+                print("Result: %s" % result)
+                """
 
-        return "The AncesTree has absorbed knowledge!"
+            return "The AncesTree has absorbed knowledge!"
+        except Exception as e:
+            return "This statement is problematic."
 
 def main():
     # print a welcome message for the user

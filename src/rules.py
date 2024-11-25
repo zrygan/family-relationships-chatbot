@@ -36,10 +36,10 @@ class Family_Tree:
         
     def define_facts(self):
         #
-        self.prolog.assertz("man(X)")
+        #self.prolog.assertz("man(X)")
 
         # 
-        self.prolog.assertz("woman(X)")
+        # self.prolog.assertz("woman(X)")
 
         # X is a child of Y     -> Y is a parent of X
         self.prolog.assertz("child(X,Y) :- parent(Y,X)")
@@ -54,7 +54,7 @@ class Family_Tree:
         self.prolog.assertz("brother(X,Y) :- child(X,A), child(Y,A), X\\=Y, woman(X)")
 
         # X is a parent of Y    -> Y is a child of X
-        self.prolog.assertz("parent(X,Y)")
+        #self.prolog.assertz("parent(X,Y)")
 
         # X is a son of Y       -> X is a child of Y,   X is a man
         self.prolog.assertz("son(X,Y) :- child(X,Y), man(X)")
@@ -272,63 +272,54 @@ class Prompts:
 
     def get_assertion(self, statement, names):
         assertions = []
+        
         if "and" in statement and "are siblings" in statement:
-            assertions = [
-                f"siblings{(names[0], names[1])}"
-            ]
+            assertions = [f"siblings({names[0]}, {names[1]})"]
+            
         elif "is a sister of" in statement:
-            assertions = [
-                f"sister{(names[0], names[1])}"
-            ]
+            assertions = [f"sister({names[0]}, {names[1]})", f"woman({names[0]})"]
+            
         elif "is the mother of" in statement:
-            assertions = [
-                f"mother{(names[0], names[1])}"
-            ]
+            assertions = [f"mother({names[0]}, {names[1]})"]
+            
         elif "is a grandmother of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"grandmother({names[0]}, {names[1]})"]
+            
         elif "is a child of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"child({names[0]}, {names[1]})"]
+            
         elif "is a daughter of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"daughter({names[0]}, {names[1]})"]
+            
         elif "is an uncle of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"uncle({names[0]}, {names[1]})"]
+            
         elif "is a brother of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"brother({names[0]}, {names[1]})"]
+            
         elif "is the father of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"father({names[0]}, {names[1]})"]
+            
         elif "and" in statement and "are the parents of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"parents({names[0]}, {names[2]})",
+                          f"parents({names[1]}, {names[2]})"]
+            
         elif "is the grandfather of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"grandfather({names[0]}, {names[1]})"]
+            
         elif "and" in statement and "are children of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"children({names[0]}, {names[3]})",
+                          f"children({names[1]}, {names[3]})",
+                          f"children({names[2]}, {names[3]})",]
+            
         elif "is a son of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"son({names[0]}, {names[1]})"]
+            
         elif "is an aunt of" in statement:
-            assertions = [
-
-            ]
+            assertions = [f"aunt({names[0]}, {names[1]})"]
+            
         return assertions
+
     
     """
     def has_predicate(self, predicate):
