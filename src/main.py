@@ -71,7 +71,7 @@ def ask_question(input : str, f: Family_Tree):
         except Exception as e:
             return "I don't know."
     else:
-        return "I don't know."
+        return "I don't understand your question."
 
 # TODO: implement this method
 # adds a fact to the knowledge base
