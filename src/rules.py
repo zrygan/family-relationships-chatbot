@@ -69,7 +69,7 @@ class Family_Tree:
         self.prolog.assertz("father(X,Y) :- man(X), parent(X,Y)")
 
         # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
-        self.prolog.assertz("grandparent(X) :- parent(X,Y), parent(Y,_)")
+        self.prolog.assertz("grandparent(X,Z) :- parent(X,Y), parent(Y,Z)")
 
         # X is a gfather of Z   -> X is a gparent,      X is a man,             X is a parent of Y,         Y is a parent of Z
         self.prolog.assertz("grandfather(X,Z) :- grandparent(X), man(X), parent(X,Y), parent(Y,Z)")
