@@ -197,7 +197,7 @@ class Prompts:
         for word in string:
             cleaned_word = re.sub(r'\W+', '', word).lower()
             if cleaned_word not in self.allowed_words:
-                if "?" in word or "." in word:
+                if "?" in word or "." in word or "," in word:
                     word = word[:-1]
                 names.append(word)
         return names
@@ -248,12 +248,21 @@ class Prompts:
                 elif "an aunt of" in string:
                     return "an aunt",f"aunt({names[0]}, {names[1]})"
             elif "Are" in string:
-                if len(names) == 4:
+                n = len(names)
+                if n > 3:
                     if "children of" in string:
-                        return "children",f"child({names[0]}, {names[3]}), child({names[1]}, {names[3]}), child({names[2]}, {names[3]})"
-                elif len(names) == 3:
+                        query = ""
+                        for i in range(n - 1):
+                            if i < n - 2:
+                                query += f"child({names[i]}, {names[n-1]}), "
+                            else:
+                                query += f"child({names[i]}, {names[n-1]})"
+                        return "children", query
+                elif n == 3:
                     if "the parents of" in string:
                         return "parents",f"parent({names[0]}, {names[2]}), parent({names[1]}, {names[2]})"
+                    elif "children of" in string:
+                        return "children",f"child({names[0]}, {names[2]}), child({names[1]}, {names[2]})"
                 else:
                     if "siblings" in string:
                         return "siblings",f"siblings({names[0]}, {names[1]})"

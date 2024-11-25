@@ -31,19 +31,37 @@ def ask_question(input):
             elif "Are" in input:
                 result = bool(list(family_tree.prolog.query(query)))
                 if result:
-                    if n == 4:
-                        return (f"Yes, {names[0]}, {names[1]}, and {names[2]}"
-                                f" are the {relation} of {names[3]}.")
+                    if n > 3:
+                        response = "Yes, "
+                        for i in range(n-1):
+                            if i < n - 2:
+                                response += f"{names[i]}, "
+                            else:
+                                response += f"and {names[i]}"
+                        response += f" are the {relation} of {names[n-1]}."
+                        return response
                     elif n == 3:
+                        if "children" in input:
+                            return (f"Yes, {names[0]} and {names[1]}"
+                                    f" are {relation} of {names[2]}.")
                         return (f"Yes, {names[0]} and {names[1]}"
                                 f" are the {relation} of {names[2]}.")
                     else:
                         return f"Yes, {names[0]} and {names[1]} are {relation}."
                 else:
-                    if n == 4:
-                        return (f"No, {names[0]}, {names[1]}, and {names[2]}"
-                                f" are not the {relation} of {names[3]}.")
+                    if n > 3:
+                        response = "No, "
+                        for i in range(n - 1):
+                            if i < n - 2:
+                                response += f"{names[i]}, "
+                            else:
+                                response += f"and {names[i]}"
+                        response += f" are not the {relation} of {names[n - 1]}."
+                        return response
                     elif n == 3:
+                        if "children" in input:
+                            return (f"No, {names[0]} and {names[1]}"
+                                    f" are not {relation} of {names[2]}.")
                         return (f"No, {names[0]} and {names[1]}"
                                 f" are not the {relation} of {names[2]}.")
                     else:
