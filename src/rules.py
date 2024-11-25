@@ -63,13 +63,10 @@ class Family_Tree:
         self.prolog.assertz("daughter(X,Y) :- child(X,Y), woman(X)")
 
         # X is a mother         -> X is a woman,        X is a parent of Y
-        self.prolog.assertz("mother(X) :- woman(X), parent(X,_)")
+        self.prolog.assertz("mother(X,Y) :- woman(X), parent(X,Y)")
 
         # X is a father         -> X is a man,          X is a parent of Y
-        self.prolog.assertz("father(X) :- man(X), parent(X,_)")
-
-        # X is a parent of Y    -> Y is a child of X
-        self.prolog.assertz("parent(X,Y)")
+        self.prolog.assertz("father(X,Y) :- man(X), parent(X,Y)")
 
         # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
         self.prolog.assertz("grandparent(X) :- parent(X,Y), parent(Y,_)")
