@@ -22,7 +22,7 @@ def ask_question(input):
         n = len(names)
         try:
             if "Is" in input:          
-                result = bool(list(Prolog.query(query)))
+                result = bool(list(family_tree.prolog.query(query)))
                 if result:
                     return f"Yes, {names[0]} is {relation} of {names[1]}."
                 else:
