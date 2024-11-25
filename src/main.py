@@ -102,43 +102,6 @@ def handle_statement(user_input):
 prompt = Prompts()
 family_tree = Family_Tree()
 
-family_tree.prolog.assertz("parent(bob, bandit)")
-family_tree.prolog.assertz("parent(bob, radley)")
-family_tree.prolog.assertz("parent(bob, stripe)")
-family_tree.prolog.assertz("parent(chris, bandit)")
-family_tree.prolog.assertz("parent(chris, radley)")
-family_tree.prolog.assertz("parent(chris, stripe)")
-
-family_tree.prolog.assertz("parent(bandit, bluey)")
-family_tree.prolog.assertz("parent(bandit, bingo)")
-family_tree.prolog.assertz("parent(chilli, bluey)")
-family_tree.prolog.assertz("parent(chilli, bingo)")
-
-family_tree.prolog.assertz("parent(stripe, muffin)")
-family_tree.prolog.assertz("parent(stripe, socks)")
-family_tree.prolog.assertz("parent(trixie, muffin)")
-family_tree.prolog.assertz("parent(trixie, socks)")
-
-family_tree.prolog.assertz("parent(mort, brandy)")
-family_tree.prolog.assertz("parent(mort, chilli)")
-
-
-family_tree.prolog.assertz("man(bob)")
-family_tree.prolog.assertz("man(radley)")
-family_tree.prolog.assertz("man(bandit)")
-family_tree.prolog.assertz("man(stripe)")
-family_tree.prolog.assertz("man(mort)")
-
-family_tree.prolog.assertz("woman(bluey)")
-family_tree.prolog.assertz("woman(bingo)")
-family_tree.prolog.assertz("woman(muffin)")
-family_tree.prolog.assertz("woman(socks)")
-family_tree.prolog.assertz("woman(brandy)")
-family_tree.prolog.assertz("woman(chilli)")
-family_tree.prolog.assertz("woman(chris)")
-family_tree.prolog.assertz("woman(trixie)")
-
-
 def main():
     # print a welcome message for the user
     print("Greetings! I am the AncesTree!") 
