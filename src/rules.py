@@ -96,28 +96,30 @@ class Prompts:
         
         # a list of possible question patterns
         self.questions = [
-            "Are ? and ? siblings",
+            "Are ? and ? siblings?",
             "Is ? a sister of ?",
             "Is ? a brother of ?",
             "Is ? the mother of ?",
             "Is ? the father of ?",
             "Are ? and ? the parents of ?",
-            "Is ? the grandmother of ?",
+            "Is ? a grandmother of ?",
             "Is ? a daughter of ?",
             "Is ? a son of ?",
             "Is ? a child of ?",
-            "Are ?, ? and ? children of ?",
+            "Are ? ? and ? children of ?",
             "Is ? an uncle of ?",
             "Who are the siblings of ?",
             "Who are the sisters of ?",
+            "Who are the brothers of ?",
             "Who is the mother of ?",
             "Who is the father of ?",
             "Who are the parents of ?",
             "Is ? a grandfather of ?",
             "Who are the daughters of ?",
             "Who are the sons of ?",
+            "Who are the children of ?",
             "Is ? an aunt of ?",
-            "Are ? and ? relatives"
+            "Are ? and ? relatives?"
         ]
         
         # set of words that cannot be replaced with '?'
