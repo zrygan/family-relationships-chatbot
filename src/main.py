@@ -9,14 +9,6 @@ family_tree = Family_Tree()
 def ask_question(input):
     names = prompt.extract_names(input) # extracting names
     relation, query = prompt.get_query(input, names)
- 
-    # FIXME: debugging
-
-    """print("\nDebugging Query")
-    print("Query: %s" % query)
-    res = (list(family_tree.prolog.query(query)))
-    print("Result: %s" % res)"""
-
 
     if query is not None:
         n = len(names)
@@ -90,76 +82,81 @@ def ask_question(input):
                     result += f"{names[0]} has no {relation}."
                 return result
         except Exception as e:
-            return "I cannot say..."
+            return "Sorry. It's unclear to me..."
     else:
-        return "I am unable to comprehend your question..."
+        return "My apologies. Your question confuses me."
 
 # adds fact to the knowledge base if valid
 # returns the validity of the fact 
 def handle_statement(input):
     # transform statement into an assertion
-    statement = prompt.remove_vars_and_consts(input)
-    names = prompt.extract_names(input)
-    names = [name.lower() for name in names]
-    assertions = prompt.get_assertion(input, names)
+    try:
+        statement = prompt.remove_vars_and_consts(input)
+        names = prompt.extract_names(input)
+        names = [name.lower() for name in names]
+        assertions = prompt.get_assertion(input, names)
+    except Exception as e:
+        return "Who were you talking about again?"
 
-    # FIXME:
-    """
-    print("\nDebugging Statement")
-    print("Assertion: %s" % assertions)
-    """
-
-    """
-    if not prompt.is_predicate_valid(assertions): # check if predicate exists
-        return "I am unable to comprehend your statement..."
-    if prompt.is_redundant(assertion, family_tree.prolog): # check if assertion is already defined / already exists
-            return "This is already known."
-        elif not prompt.is_contradictory(assertion, family_tree.prolog): # check if assertion contradicts already defined facts
-            return "This contradicts what is already known."
-    """
-
+    # TODO: check relationship / assertion validity
+    
     if not assertions:
-        return "I am unable to comprehend your statement..."
+        return "My Apologies. Your statement confuses me."
     else:  # valid assertion
         try: 
             for assertion in assertions:
                 family_tree.prolog.assertz(assertion)
-
-                #FIXME:
-                """
-                print("\nDebugging Statement")
-                print("Assertion: %s" % assertion)
-                result = list(family_tree.prolog.query("siblings(ei, x)"))
-                print("Result: %s" % result)
-                """
-
-            return "The AncesTree has absorbed knowledge!"
+                # family_tree.prolog.retract(assertion)
+            return "Alright! I've grasped this knowledge"
         except Exception as e:
-            return "This statement is problematic."
+            return "Hmmm... Your statement is problematic."
 
 def main():
     # print a welcome message for the user
-    print("Greetings! I am the AncesTree!") 
-    print("I house the knowledge that roots the connections of families.")
+    print("Greetings! I am the AncesTree.") 
+    time.sleep(1)
+    print("I house knowledge which unites families!")
+    time.sleep(1)
+    print("Ask me a question or supply me with information.")
+    time.sleep(1)
+
+    # array of messages
+    messages = [
+        "I be-leaf in you.",
+        "Always here to help.",
+        "Go on, enlighten me.",
+        "How are you? I'm Oak-ay!",
+        "Do you have any questions?",
+        "Leave no branch unexplored.",
+        "Look at you, all spruced up.",
+        "Your knowledge helps me grow!",
+        "Who wood you like to know about?",
+        "Tell me more about your family tree.",
+    ]
 
     # loop chatbot
     while True:
         # prompt user for input 
-        print("\nHow may I enlighten you today?")
+        print("\n" + random.choice(messages))
+        time.sleep(1)
         user_input = input("> ").strip() 
 
         # exiting chatbot
         if user_input.lower() == "exit":
-            print("\nFarewell...")
+            print("\nI'm rooting for you! Farewell...")
+            time.sleep(1)
             break
 
         # checking input
         if user_input.endswith("?"): # check if input is a question
             print("\n" + ask_question(user_input)) # getting an answer
+            time.sleep(1)
         elif user_input.endswith("."): # check if input is a statement 
             print("\n" + handle_statement(user_input))
+            time.sleep(1)
         else: # invalid input
-            print("\nYour message was confusing...")
+            print("\nI'm stumped! I couldn't understand.")
+            time.sleep(1)
 
 if __name__ == "__main__":
     main()

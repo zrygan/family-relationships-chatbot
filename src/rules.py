@@ -35,23 +35,21 @@ class Family_Tree:
         self.define_facts()
         
     def define_facts(self):
+        # FIXME: comments are inconsistent, changed some rules here
+
+         # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
+        self.prolog.assertz("grandparent(X,Z) :- child(Z,Y), child(Y,X)")
+
+        # X is a gfather of Z   -> X is a gparent,      X is a man,             X is a parent of Y,         Y is a parent of Z
+        self.prolog.assertz("grandfather(X,Z) :- man(X), grandparent(X,Z)")
+
+        # X is a gmother of Z   -> X is a gparent,      X is a woman,           X is a parent of Y,         Y is a parent of Z
+        self.prolog.assertz("grandmother(X,Z) :- woman(X), grandparent(X,Z)")
+
+
+
         # X is a child of Y     -> Y is a parent of X
         self.prolog.assertz("parent(X,Y) :- child(Y,X)")
-
-        # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
-        self.prolog.assertz("siblings(X,Y) :- child(X,A), child(Y,A), X \\=Y")
-
-        #
-        self.prolog.assertz("sister(X,Y) :- child(X,A), child(Y,A), X \\= Y, woman(X)")
-
-        #
-        self.prolog.assertz("brother(X,Y) :- child(X,A), child(Y,A), X \\= Y, man(X)")
-
-        # X is a son of Y       -> X is a child of Y,   X is a man
-        self.prolog.assertz("son(X,Y) :- child(X,Y), man(X)")
-
-        # X is a daughter of Y  -> X is a child of Y,   Y is a woman
-        self.prolog.assertz("daughter(X,Y) :- child(X,Y), woman(X)")
 
         # X is a mother         -> X is a woman,        X is a parent of Y
         self.prolog.assertz("mother(X,Y) :- woman(X), child(Y,X)")
@@ -59,30 +57,54 @@ class Family_Tree:
         # X is a father         -> X is a man,          X is a parent of Y
         self.prolog.assertz("father(X,Y) :- man(X), child(Y,X)")
 
-        # X is a gparent        -> X is a parent of Y,  Y is a parent of Z
-        self.prolog.assertz("grandparent(X,Z) :- child(Z,Y), child(Y,X)")
 
-        # X is a gfather of Z   -> X is a gparent,      X is a man,             X is a parent of Y,         Y is a parent of Z
-        self.prolog.assertz("grandfather(X,Z) :- man(X), child(Z,Y), child(Y,X)")
-
-        # X is a gmother of Z   -> X is a gparent,      X is a woman,           X is a parent of Y,         Y is a parent of Z
-        self.prolog.assertz("grandmother(X,Z) :- woman(X), child(Z,Y), child(Y,X)")
 
         # X is an aunt of Z     -> X is a woman,        X, Y are siblings,      Y is a parent of Z
-        self.prolog.assertz("aunt(X,Z) :- woman(X), child(X,A), child(Y,A), X \\=Y, parent(Y,Z)")
+        self.prolog.assertz("aunt(X,Z) :- woman(X), siblings(X,Y), parent(Y,Z)")
 
         # X is an uncle of Z    -> X is a man,          X, Y are siblings,      Y is a parent of Z
-        self.prolog.assertz("uncle(X,Z) :- man(X), child(X,A), child(Y,A), X \\=Y, parent(Y,Z)")
+        self.prolog.assertz("uncle(X,Z) :- man(X), siblings(X,Y), parent(Y,Z)")
+
+
+
+        # X is a son of Y       -> X is a child of Y,   X is a man
+        self.prolog.assertz("son(X,Y) :- child(X,Y), man(X)")
+
+        # X is a daughter of Y  -> X is a child of Y,   Y is a woman
+        self.prolog.assertz("daughter(X,Y) :- child(X,Y), woman(X)")
+
+
+
+        # X and Y are siblings  -> X is a child of A,   Y is a child of A (X and Y are not the same person)
+        self.prolog.assertz("siblings(X,Y) :- parent(A,X), parent(A,Y), X \\= Y")
+
+        #
+        self.prolog.assertz("sister(X,Y) :- siblings(X,Y), X \\= Y, woman(X)")
+
+        # 
+        self.prolog.assertz("brother(X,Y) :- siblings(X,Y), X \\= Y, man(X)")
+
+
 
         # X and Y are relatives -> X is a gfather of Y; Y is a gfather of X;    X is a parent of Y;         Y is a parent of X;
         #                          X is the aunt of Y;  Y is the aunt of X;     X is the uncle of Y;        Y is the uncle of X;
         #                          X and Y are siblings
-        self.prolog.assertz("relatives(X,Y) :- "
-                            "grandparent(X,Y); grandparent(Y,X); "
-                            "parent(X,Y); parent(Y,X); "
-                            "aunt(X,Y); aunt(Y,X); "
-                            "uncle(X,Y); uncle(Y,X); "
-                            "siblings(X,Y)")
+        self.prolog.assertz(
+            "relatives(X, Y) :- "
+            "(grandparent(X, Y); grandparent(Y, X); "
+            "grandmother(X, Y); grandmother(Y, X); "
+            "grandfather(X, Y); grandfather(Y, X); "
+            "parent(X, Y); parent(Y, X); "
+            "mother(X, Y); mother(Y, X); "
+            "father(X, Y); father(Y, X); "
+            "aunt(X, Y); aunt(Y, X); "
+            "uncle(X, Y); uncle(Y, X); "
+            "daughter(X, Y); daughter(Y, X); "
+            "son(X, Y); son(Y, X); "
+            "sister(X, Y); sister(Y, X); "
+            "brother(X, Y); brother(Y, X); "
+            "siblings(X, Y); siblings(Y, X))"
+        )
         
 import re
 
@@ -99,7 +121,8 @@ class Prompts:
             "? and ? are the parents of ?",
             "? is the uncle of ?",
             "? is the father of ?",
-            "? is the grand father of ?",
+            "? is a grandfather of ?",
+            "? is a grandmother of ?",
             "?, ? and ? are the children of ?",
             "? is the son of ?",
             "? is the aunt of ?"
@@ -265,99 +288,71 @@ class Prompts:
 
     def get_assertion(self, statement, names):
         assertions = []
-        
-        if "and" in statement and "are siblings" in statement:
-            assertions = [f"siblings({names[0]}, {names[1]})",
-                          f"siblings({names[1]}, {names[0]})"]
-            
-        elif "is a sister of" in statement:
-            assertions = [f"sister({names[0]}, {names[1]})", 
-                          f"woman({names[0]})",
-                          f"siblings({names[0]}, {names[1]})",
-                          f"siblings({names[1]}, {names[0]})"]
-            
-        elif "is the mother of" in statement:
-            assertions = [f"mother({names[0]}, {names[1]})",
-                          f"woman({names[0]})",
-                          f"child({names[1]}, {names[0]})"]
-            
-        elif "is a grandmother of" in statement:
-            assertions = [f"grandmother({names[0]}, {names[1]})",
-                          f"woman({names[0]})"]
-            
-        elif "is a child of" in statement:
-            assertions = [f"child({names[0]}, {names[1]})"]
-            
-        elif "is a daughter of" in statement:
-            assertions = [f"daughter({names[0]}, {names[1]})",
-                          f"woman({names[0]})"]
-            
-        elif "is an uncle of" in statement:
-            assertions = [f"uncle({names[0]}, {names[1]})",
+
+        # grandparents
+        if "is a grandfather of" in statement:
+            assertions = [f"child(X, {names[0]})",
+                          f"child({names[1]}, X)",
                           f"man({names[0]})"]
-            
-        elif "is a brother of" in statement:
-            assertions = [f"brother({names[0]}, {names[1]})",
-                          f"man({names[0]})",
-                          f"siblings({names[0]}, {names[1]})",
-                          f"siblings({names[1]}, {names[0]})"]
-            
-        elif "is the father of" in statement:
-            assertions = [f"father({names[0]}, {names[1]})",
-                          f"man({names[0]})",
+        elif "is a grandmother of" in statement:
+            assertions = [f"child(X, {names[0]})",
+                          f"child({names[1]}, X)",
+                          f"woman({names[0]})"]
+        elif "is a grandparent of" in statement:
+            assertions = [f"child(X, {names[0]})",
+                          f"child({names[1]}, X)"]
+
+        # parents
+        elif "is the mother of" in statement:
+            assertions = [f"woman({names[0]})",
                           f"child({names[1]}, {names[0]})"]
-            
+        elif "is the father of" in statement:
+            assertions = [f"man({names[0]})",
+                          f"child({names[1]}, {names[0]})"]
         elif "and" in statement and "are the parents of" in statement:
             assertions = [f"child({names[2]}, {names[0]})",
                           f"child({names[2]}, {names[1]})"]
-            
-        elif "is the grandfather of" in statement:
-            assertions = [f"grandfather({names[0]}, {names[1]})",
-                          f"man({names[0]})"]
-            
-        elif "and" in statement and "are children of" in statement:
-            assertions = [f"children({names[0]}, {names[3]})",
-                          f"children({names[1]}, {names[3]})",
-                          f"children({names[2]}, {names[3]})",
-                          f"siblings({names[0]}, {names[1]})",
-                          f"siblings({names[1]}, {names[0]})",
-                          f"siblings({names[1]}, {names[2]})",
-                          f"siblings({names[2]}, {names[1]})",
-                          f"siblings({names[2]}, {names[0]})",
-                          f"siblings({names[0]}, {names[2]})"]
-            
-        elif "is a son of" in statement:
-            assertions = [f"son({names[0]}, {names[1]})",
-                          f"man({names[0]})"]
-            
-        elif "is an aunt of" in statement:
-            assertions = [f"aunt({names[0]}, {names[1]})",
-                          f"woman({names[0]})"]
-            
-        return assertions
 
+        # aunt and uncle
+        elif "is an aunt of" in statement:
+            assertions = [f"woman({names[0]})",
+                          f"child({names[0]}, A)",
+                          f"child(Y, A)",
+                          f"child({names[1]}, Y)"]
+        elif "is an uncle of" in statement:
+            assertions = [f"man({names[0]})",
+                          f"child({names[0]}, A)",
+                          f"child(Y, A)",
+                          f"child({names[1]}, Y)"]
+
+        # children
+        elif "is a child of" in statement:
+            assertions = [f"child({names[0]}, {names[1]})"]
+        elif "and" in statement and "are children of" in statement:
+            for i in range(len(names) - 1):
+                assertions.append(f"child({names[i]}, {names[-1]})")
+        elif "is a son of" in statement:
+            assertions = [f"man({names[0]})",
+                          f"child({names[1]}, {names[0]})"]
+        elif "is a daughter of" in statement:
+            assertions = [f"woman({names[0]})",
+                          f"child({names[1]}, {names[0]})"]
+
+        # siblings
+        elif "and" in statement and "are siblings" in statement:
+            assertions = [f"child({names[0]}, A)",
+                          f"child({names[1]}, A)"]
+        elif "is a brother of" in statement:
+            assertions = [f"man({names[0]})",
+                          f"child({names[0]}, A)",
+                          f"child({names[1]}, A)"]
+        elif "is a sister of" in statement:
+            assertions = [f"woman({names[0]})",
+                          f"child({names[0]}, A)",
+                          f"child({names[1]}, A)"]
+
+        return assertions
     
-    """
-    def has_predicate(self, predicate):
-        return 1 # FIXME:
-    """
-    
-    def is_redundant(self, assertion, prolog):
-        # Query the Prolog database
-        result = list(prolog.query(assertion))
-        
-        # Print the result for debugging
-        print("Query result:", result)
-        
-        # Check if all items in the result are empty dictionaries
-        if all(not bool(d) for d in result):  # If all are empty dicts
-            return False  # No match found, not redundant
-        
-        # Otherwise, the assertion is redundant (already exists)
+    # TODO:
+    def is_assertion_valid(self, assertion, prolog):
         return True
-    
-    def is_consistent(self, assertion):
-        return True # FIXME:
-    
-    def is_contradictory(self, assertion, prolog):
-        return True # FIXME:
