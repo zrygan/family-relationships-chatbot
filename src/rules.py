@@ -304,7 +304,7 @@ class Prompts:
                           f"man({names[0]})"]
             
         elif "is a brother of" in statement:
-            assertions = [f"brother({names[0]}, {names[1]})"
+            assertions = [f"brother({names[0]}, {names[1]})",
                           f"man({names[0]})",
                           f"siblings({names[0]}, {names[1]})",
                           f"siblings({names[1]}, {names[0]})"]
