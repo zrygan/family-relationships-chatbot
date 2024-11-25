@@ -1,18 +1,30 @@
 from imports import *
 from rules import *
 
+# initializing
+prompt = Prompts()
+family_tree = Family_Tree() 
+
 # asks a query
 def ask_question(input):
     names = prompt.extract_names(input)
     relation, query = prompt.get_query(input, names)
+ 
+    # FIXME: debugging
+    print("\nDebugging Query")
+    print("names: %s" % names)
+    print("relation: %s" % relation)
+    print("Query: %s" % query)
+    res = (list(family_tree.prolog.query(query)))
+    print(res)
+    print("Result: %s" % res)
 
     if query is not None:
         n = len(names)
         try:
             if "Is" in input:          
-                result = bool(list(family_tree.prolog.query(query)))
+                result = bool(list(Prolog.query(query)))
                 if result:
-                    print("yo")
                     return f"Yes, {names[0]} is {relation} of {names[1]}."
                 else:
                     return f"No, {names[0]} is not {relation} of {names[1]}."
@@ -61,28 +73,40 @@ def ask_question(input):
                     result += f"{names[0]} has no {relation}."
                 return result
         except Exception as e:
-            return "I don't know."
+            return "I cannot say..."
     else:
-        return "I don't understand your question."
+        return "I am unable to comprehend your question..."
 
 # adds fact to the knowledge base if valid
 # returns the validity of the fact 
-def handle_statement(user_input):
+def handle_statement(input):
     # transform statement into an assertion
-    statement = prompt.remove_vars_and_consts(user_input)
-    names = prompt.extract_names(user_input)
-    assertions = prompt.get_assertion(user_input, names)
+    statement = prompt.remove_vars_and_consts(input)
+    names = prompt.extract_names(input)
+    assertions = prompt.get_assertion(input, names)
 
-    if True == True: # TODO: check validity of assertions here
+    """
+    if not prompt.is_predicate_valid(assertions): # check if predicate exists
+        return "I am unable to comprehend your statement..."
+    if prompt.is_redundant(assertion, family_tree.prolog): # check if assertion is already defined / already exists
+            return "This is already known."
+        elif not prompt.is_contradictory(assertion, family_tree.prolog): # check if assertion contradicts already defined facts
+            return "This contradicts what is already known."
+    """
+
+    if not assertions:
+        return "I am unable to comprehend your statement..."
+    else:  # valid assertion
         for assertion in assertions:
-            family_tree.prolog.assertz(assertion)
-    else:
-        return False
-    return True
+                family_tree.prolog.assertz(assertion)
 
-# initializing
-prompt = Prompts()
-family_tree = Family_Tree() 
+                #FIXME:
+                print("\nDebugging Statement")
+                print("Assertion: %s" % assertion)
+                result = list(family_tree.prolog.query("siblings(Lyney, Lynette)"))
+                print(result)
+
+        return "The AncesTree has absorbed knowledge!"
 
 def main():
     # print a welcome message for the user
@@ -104,13 +128,9 @@ def main():
         if user_input.endswith("?"): # check if input is a question
             print("\n" + ask_question(user_input)) # getting an answer
         elif user_input.endswith("."): # check if input is a statement 
-            # check with PROLOG if input is valid
-            if handle_statement(user_input) == True: # input is valid, added to the knowledge base
-                print("\nThe AncesTree has absorbed knowledge!")
-            else: # input is contradictory, invalid input
-                print("\nThe AncesTree deems information contradictory...")
+            print("\n" + handle_statement(user_input))
         else: # invalid input
-            print("\nThe AncesTree is unable to comprehend your message...")
+            print("\nYour message was confusing...")
 
 if __name__ == "__main__":
     main()
