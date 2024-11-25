@@ -17,57 +17,59 @@ def ask_question(input : str, f: Family_Tree):
     relation, query = prompt.get_query(input, names)
     if query is not None:
         n = len(names)
-        if "Is" in input:
-            result = bool(list(Prolog.query(query)))
-            if result:
-                return f"Yes, {names[0]} is {relation} of {names[1]}."
-            else:
-                return f"No, {names[0]} is not {relation} of {names[1]}."
-        elif "Are" in input:
-            result = bool(list(Prolog.query(query)))
-            if result:
-                if n == 4:
-                    return (f"Yes, {names[0]}, {names[1]}, and {names[2]}"
-                            f" are the {relation} of {names[3]}.")
-                elif n == 3:
-                    return (f"Yes, {names[0]} and {names[1]}"
-                            f" are the {relation} of {names[2]}.")
+        try:
+            if "Is" in input:
+                result = bool(list(Prolog.query(query)))
+                if result:
+                    return f"Yes, {names[0]} is {relation} of {names[1]}."
                 else:
-                    return f"Yes, {names[0]} and {names[1]} are {relation}."
-            else:
-                if n == 4:
-                    return (f"No, {names[0]}, {names[1]}, and {names[2]}"
-                            f" are not the {relation} of {names[3]}.")
-                elif n == 3:
-                    return (f"No, {names[0]} and {names[1]}"
-                            f" are not the {relation} of {names[2]}.")
-                else:
-                    return f"No, {names[0]} and {names[1]} are not {relation}."
-        else:
-            people = list(Prolog.query(query))
-            ppl_set = {person['X'].capitalize() for person in people}
-            people = list(ppl_set)
-            result = ""
-            n = len(people)
-            if n > 2:
-                for i in range(n):
-                    if i < n - 1:
-                        result += f"{people[i]}, "
+                    return f"No, {names[0]} is not {relation} of {names[1]}."
+            elif "Are" in input:
+                result = bool(list(Prolog.query(query)))
+                if result:
+                    if n == 4:
+                        return (f"Yes, {names[0]}, {names[1]}, and {names[2]}"
+                                f" are the {relation} of {names[3]}.")
+                    elif n == 3:
+                        return (f"Yes, {names[0]} and {names[1]}"
+                                f" are the {relation} of {names[2]}.")
                     else:
-                        result += f"and {people[i]}"
-                result += f" are the {relation} of {names[0]}."
-            elif n == 2:
-                result += f"{people[0]} and {people[1]} are the {relation} of {names[0]}."
-            elif n == 1:
-                if relation.endswith("s"):
-                    relation = relation[:-1]
-                elif relation == "children":
-                    relation = "child"
-                result += f"{people[0]} is the {relation} of {names[0]}."
+                        return f"Yes, {names[0]} and {names[1]} are {relation}."
+                else:
+                    if n == 4:
+                        return (f"No, {names[0]}, {names[1]}, and {names[2]}"
+                                f" are not the {relation} of {names[3]}.")
+                    elif n == 3:
+                        return (f"No, {names[0]} and {names[1]}"
+                                f" are not the {relation} of {names[2]}.")
+                    else:
+                        return f"No, {names[0]} and {names[1]} are not {relation}."
             else:
-                result += f"{names[0]} has no {relation}."
-            return result
-
+                people = list(Prolog.query(query))
+                ppl_set = {person['X'].capitalize() for person in people}
+                people = list(ppl_set)
+                result = ""
+                n = len(people)
+                if n > 2:
+                    for i in range(n):
+                        if i < n - 1:
+                            result += f"{people[i]}, "
+                        else:
+                            result += f"and {people[i]}"
+                    result += f" are the {relation} of {names[0]}."
+                elif n == 2:
+                    result += f"{people[0]} and {people[1]} are the {relation} of {names[0]}."
+                elif n == 1:
+                    if relation.endswith("s"):
+                        relation = relation[:-1]
+                    elif relation == "children":
+                        relation = "child"
+                    result += f"{people[0]} is the {relation} of {names[0]}."
+                else:
+                    result += f"{names[0]} has no {relation}."
+                return result
+        except Exception as e:
+            return "I don't know."
     else:
         return "I don't know."
 
@@ -95,7 +97,6 @@ def main():
         if user_input.lower() == "exit":
             print("\nFarewell...")
             break
-
         #user_input = "Ei is a sister of Makoto." # FIXME: for testing only
 
         # FIXME: (if the input contains a question mark according to the specs)
