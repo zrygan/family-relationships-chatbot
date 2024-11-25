@@ -11,12 +11,12 @@ def ask_question(input):
     relation, query = prompt.get_query(input, names)
  
     # FIXME: debugging
-    """
-    print("\nDebugging Query")
+
+    """print("\nDebugging Query")
     print("Query: %s" % query)
     res = (list(family_tree.prolog.query(query)))
-    print("Result: %s" % res)
-    """
+    print("Result: %s" % res)"""
+
 
     if query is not None:
         n = len(names)
