@@ -16,7 +16,6 @@ def ask_question(input):
     print("relation: %s" % relation)
     print("Query: %s" % query)
     res = (list(family_tree.prolog.query(query)))
-    print(res)
     print("Result: %s" % res)
 
     if query is not None:
