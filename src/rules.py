@@ -295,126 +295,196 @@ class Prompts:
             assertions = [f"child(X, {names[0]})",
                           f"child({names[1]}, X)",
                           f"man({names[0]})"]
-            query = f"grandfather({names[0]}, {names[1]})"
+            query = [f"grandfather({names[0]}, {names[1]})"]
         elif "is a grandmother of" in statement:
             assertions = [f"child(X, {names[0]})",
                           f"child({names[1]}, X)",
                           f"woman({names[0]})"]
-            query = f"grandmother({names[0]}, {names[1]})"
+            query = [f"grandmother({names[0]}, {names[1]})"]
         elif "is a grandparent of" in statement:
             assertions = [f"child(X, {names[0]})",
                           f"child({names[1]}, X)"]
-            query = f"grandparent({names[0]}, {names[1]})"
+            query = [f"grandparent({names[0]}, {names[1]})"]
 
         # parents
         elif "is the mother of" in statement:
             assertions = [f"woman({names[0]})",
                           f"child({names[1]}, {names[0]})"]
-            query = f"mother({names[0]}, {names[1]})"
+            query = [f"mother({names[0]}, {names[1]})"]
         elif "is the father of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[1]}, {names[0]})"]
-            query = f"father({names[0]}, {names[1]})"
+            query = [f"father({names[0]}, {names[1]})"]
         elif "and" in statement and "are the parents of" in statement:
             assertions = [f"child({names[2]}, {names[0]})",
                           f"child({names[2]}, {names[1]})"]
-            query = f"child({names[0]}, {names[1]})" # FIXME:
+            query = [f"parent({names[0]}, {names[2]})",
+                     f"parent({names[1]}, {names[2]})"]
 
         # aunt and uncle
         elif "is an aunt of" in statement:
             assertions = [f"woman({names[0]})",
-                          f"child({names[0]}, A)",
-                          f"child(Y, A)",
+                          f"child({names[0]}, X)",
+                          f"child(Y, X)",
                           f"child({names[1]}, Y)"]
-            query = f"aunt({names[0]}, {names[1]})"
+            query = [f"aunt({names[0]}, {names[1]})"]
         elif "is an uncle of" in statement:
             assertions = [f"man({names[0]})",
-                          f"child({names[0]}, A)",
-                          f"child(Y, A)",
+                          f"child({names[0]}, X)",
+                          f"child(Y, X)",
                           f"child({names[1]}, Y)"]
-            query = f"uncle({names[0]}, {names[1]})"
+            query = [f"uncle({names[0]}, {names[1]})"]
 
         # children
         elif "is a child of" in statement:
             assertions = [f"child({names[0]}, {names[1]})"]
-            query = f"child({names[0]}, {names[1]})"
+            query = [f"child({names[0]}, {names[1]})"]
         elif "and" in statement and "are children of" in statement:
             for i in range(len(names) - 1):
                 assertions.append(f"child({names[i]}, {names[-1]})")
-            # FIXME:
+                query.append(f"child({names[i]}, {names[-1]})")
         elif "is a son of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[1]}, {names[0]})"]
-            query = f"son({names[0]}, {names[1]})"
+            query = [f"son({names[0]}, {names[1]})"]
         elif "is a daughter of" in statement:
             assertions = [f"woman({names[0]})",
                           f"child({names[1]}, {names[0]})"]
-            query = f"daughter({names[0]}, {names[1]})"
+            query = [f"daughter({names[0]}, {names[1]})"]
 
         # siblings
         elif "and" in statement and "are siblings" in statement:
-            assertions = [f"child({names[0]}, A)",
-                          f"child({names[1]}, A)"]
-            query = f"siblings({names[0]}, {names[1]})"
+            assertions = [f"child(X, {names[0]})",
+                          f"child(X, {names[1]})"]
+            query = [f"siblings({names[0]}, {names[1]})"]
         elif "is a brother of" in statement:
             assertions = [f"man({names[0]})",
-                          f"child({names[0]}, A)",
-                          f"child({names[1]}, A)"]
-            query = f"brother({names[0]}, {names[1]})"
+                          f"child(X, {names[0]})",
+                          f"child(X, {names[1]})"]
+            query = [f"brother({names[0]}, {names[1]})"]
         elif "is a sister of" in statement:
             assertions = [f"woman({names[0]})",
-                          f"child({names[0]}, A)",
-                          f"child({names[1]}, A)"]
-            query = f"sister({names[0]}, {names[1]})"
+                          f"child(X, {names[0]})",
+                          f"child(X, {names[1]})"]
+            query = [f"sister({names[0]}, {names[1]})"]
 
         return query, assertions
     
     # checks if a fact is already within th knowledge base
-    def is_redundant(self, query, prolog):
+    def assertion_exists(self, query, family_tree):
         try:
-            exists = list(prolog.query(query))
+            result = list(family_tree.prolog.query(query))
+            exists = bool(result)
+            # print(f"Query: {query}, Result: {result}, Exists: {exists}")
             return True
         except Exception as e:
+            # print(f"Error querying Prolog: {e}")
             return False
-    
+
     # checks if assertion is valid based on known facts.
-    def is_assertion_valid(self, assertion, names, prolog):
-        # grandparents
+    def is_assertion_valid(self, assertion, names, family_tree):
+        queries = []
+        result = []
+
         if "grandfather" in assertion:
-            return 1
+            queries = [
+                f"man({names[0]})",
+                f"parent({names[0]}, {names[1]})",
+                f"aunt({names[0]}, {names[1]})",
+                f"uncle({names[0]}, {names[1]})",
+                f"child({names[0]}, {names[1]})",
+                f"siblings({names[0]}, {names[1]})"
+            ]
+
         elif "grandmother" in assertion:
-            return 1
+            queries = [
+                f"man({names[0]})",
+                f"aunt({names[0]}, {names[1]})",
+                f"uncle({names[0]}, {names[1]})",
+            ]
+
         elif "grandparent" in assertion:
-            return 1
-        
-        # parents
+            queries = [
+                f"child({names[0]}, {names[1]})",
+                f"siblings({names[0]}, {names[1]})",
+                f"parent({names[0]}, {names[1]})"
+            ]
+
         elif "mother" in assertion:
-            return 1
+            queries = [
+                f"man({names[0]})",
+                f"grandparent({names[0]}, {names[1]})",
+                f"aunt({names[0]}, {names[1]})",
+                f"uncle({names[0]}, {names[1]})",
+                f"child({names[0]}, {names[1]})"
+            ]
+
         elif "father" in assertion:
-            return 1
+            queries = [
+                f"woman({names[0]})",
+                f"grandparent({names[0]}, {names[1]})",
+                f"aunt({names[0]}, {names[1]})",
+                f"uncle({names[0]}, {names[1]})",
+                f"child({names[0]}, {names[1]})"
+            ]
+
         elif "parent" in assertion:
-            return 1
-        
-        # aunt and uncle
+            queries = [f"child({names[0]}, {names[1]})"]
+
         elif "aunt" in assertion:
-            return 1
+            queries = [
+                f"parent({names[0]}, {names[1]})",
+                f"grandparent({names[0]}, {names[1]})",
+                f"child({names[0]}, {names[1]})"
+            ]
+
         elif "uncle" in assertion:
-            return 1
-        
-        # children
+            queries = [
+                f"parent({names[0]}, {names[1]})",
+                f"grandparent({names[0]}, {names[1]})",
+                f"child({names[0]}, {names[1]})"
+            ]
+
         elif "child" in assertion:
-            return 1
+            queries = [
+                f"parent({names[1]}, {names[0]})",
+                f"grandparent({names[1]}, {names[0]})"
+            ]
+
         elif "son" in assertion:
-            return 1
+            queries = [
+                f"daughter({names[0]}, {names[1]})",
+                f"parent({names[0]}, {names[1]})"
+            ]
+
         elif "daughter" in assertion:
-            return 1
-        
-        # siblings
+            queries = [
+                f"son({names[0]}, {names[1]})",
+                f"parent({names[1]}, {names[0]})"
+            ]
+
+        # must not be grandparent / parent / aunt / uncle / child
         elif "siblings" in assertion:
-            return 1
+            queries = [ 
+                f"child(X, {names[0]})",
+                f"child({names[1]}, X)",
+                f"parent({names[0]}, {names[1]})",
+                f"aunt({names[0]}, {names[1]})",
+                f"uncle({names[0]}, {names[1]})",
+                f"child({names[0]}, {names[1]})"
+            ]
+
         elif "sister" in assertion:
-            return 1
+            queries = [f"brother({names[0]}, {names[1]})"]
+
         elif "brother" in assertion:
-            return 1
-        
-        return 0
+            queries = [f"sister({names[0]}, {names[1]})"]
+
+        print("")
+        print("these should be false:")
+        for query in queries:
+            result.append(self.assertion_exists(query, family_tree))
+        for i in range(len(queries)):
+            print(f"query: {queries[i]} = {result[i]}")
+
+        return not any(result) # if one condition is true, the assertion is invalid

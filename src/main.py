@@ -82,7 +82,7 @@ def ask_question(input):
                     result += f"{names[0]} has no {relation}."
                 return result
         except Exception as e:
-            return "Sorry. It's unclear to me..."
+            return "Sorry. I cannot say..."
     else:
         return "My apologies. Your question confuses me."
 
@@ -99,21 +99,23 @@ def handle_statement(input):
 
     if not assertions: # assertion was not generated
         return "Your statement confuses me. Can you say that again?"
-    elif prompt.is_redundant(query, prolog): # redundant statement
-        return "Oh! I already know this."
-    else: # checking assertion validity
-        for assertion in assertions:
-            valid = prompt.is_assertion_valid(assertion, names, prolog)
-            
-            if not valid: # terminate if invalid
-                return 1
     
-        try: # valid assertion
-            for assertion in assertions:
-                family_tree.prolog.assertz(assertion)
-            return "Alright! I've grasped this knowledge"
-        except Exception as e:
-            return "Hmmm... Your statement is problematic."
+    """
+    if prompt.assertion_exists(query[0], family_tree):
+            return "Oh! I already know this."
+    """
+    
+    """
+    for q in query: # checking validity of assertions
+        if not prompt.is_assertion_valid(q, names, family_tree):
+            return "I don't think that's possible..."
+    """
+    try: # valid assertion
+        for assertion in assertions:
+            family_tree.prolog.assertz(assertion)
+        return "Alright! I've grasped this knowledge"
+    except Exception as e:
+        return "Hmmm... Your statement is problematic."
 
 def main():
     # print a welcome message for the user
@@ -149,7 +151,6 @@ def main():
         if user_input.lower() == "exit":
             print("\nI'm rooting for you! Farewell...")
             #time.sleep(1)
-            break
 
         # checking input
         if user_input.endswith("?"): # check if input is a question
