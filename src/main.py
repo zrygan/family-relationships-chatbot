@@ -100,18 +100,16 @@ def handle_statement(input):
     if not assertions: # assertion was not generated
         return "Your statement confuses me. Can you say that again?"
     
-    """
     if prompt.assertion_exists(query[0], family_tree):
             return "Oh! I already know this."
-    """
-    
-    """
+
     for q in query: # checking validity of assertions
         if not prompt.is_assertion_valid(q, names, family_tree):
             return "I don't think that's possible..."
-    """
+        
     try: # valid assertion
         for assertion in assertions:
+            # print("asserted: " + assertion + "!")
             family_tree.prolog.assertz(assertion)
         return "Alright! I've grasped this knowledge"
     except Exception as e:
