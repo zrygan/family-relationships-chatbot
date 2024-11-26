@@ -93,16 +93,18 @@ def handle_statement(input):
         statement = prompt.remove_vars_and_consts(input)
         names = prompt.extract_names(input)
         names = [name.lower() for name in names]
-        query, assertions = prompt.get_assertion(input, names)
+        query, assertions = prompt.get_assertion(input, names, family_tree)
     except Exception as e: # name/s caused errors
         return "Who were you talking about again?"
 
     if not assertions: # assertion was not generated
         return "Your statement confuses me. Can you say that again?"
     
-    # FIXME: remove # after debugging
-    #if prompt.assertion_exists(query[0], family_tree):
-           # return "Oh! I already know this."
+    if not prompt.is_assertion_feasible(statement, names, family_tree): # checks if dependent facts can be proven ( grandparents / aunts / uncles/ siblings )
+        return "Hmm... We cannot say for sure..."
+
+    if prompt.assertion_exists(query[0], family_tree):
+        return "Oh! I already know this."
 
     for q in query: # checking validity of assertions
         if not prompt.is_assertion_valid(q, names, family_tree):

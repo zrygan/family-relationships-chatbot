@@ -278,7 +278,7 @@ class Prompts:
                         return "relatives",f"relatives({names[0]}, {names[1]})"
         return None, None
 
-    def get_assertion(self, statement, names):
+    def get_assertion(self, statement, names, family_tree):
         assertions = []
         query = None
 
@@ -349,6 +349,18 @@ class Prompts:
             assertions = [f"child({names[1]}, N)",
                           f"child({names[0]}, N)"]
             query = [f"siblings({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"parent(X, {names[1]})", family_tree):
+                res = list(prolog.query(f"parent(X, {names[1]})"))
+                for result in res:
+                    parent = result['X']
+                assertions.append(f"child({names[0]}, {parent})")
+            elif self.assertion_exists(f"parent(X, {names[0]})", family_tree):
+                res = list(prolog.query(f"parent(X, {names[0]})"))
+                for result in res:
+                    parent = result['X']
+                assertions.append(f"child({names[1]}, {parent})")
+
         elif "is a brother of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[1]}, O)",
@@ -375,6 +387,9 @@ class Prompts:
     def is_assertion_valid(self, assertion, names, family_tree):
         queries = []
         result = []
+
+        if names[0] == names [1]:
+            return False
 
         # must not be woman / parent / aunt / uncle / child / sibling
         if "grandfather" in assertion:
@@ -551,8 +566,62 @@ class Prompts:
             result.append(self.assertion_exists(q, family_tree))
 
         # FIXME:
+        """
         print("\nDebugging: All of these should be False")
         for i in range(len(queries)):
            print(f"{queries[i]} = {result[i]}") 
-        
+        """
         return not any(result) # if one condition is true, the assertion is invalid
+    
+    def is_assertion_feasible(self, statement, names, family_tree):
+        assertions = []
+        result = []
+        
+        # grandparents
+        if "is a grandfather of" in statement:
+            assertions = [f"child({names[1]}, G)",
+                          f"child(G, {names[0]})"]
+        elif "is a grandmother of" in statement:
+            assertions = [f"child({names[1]}, H)",
+                          f"child(H, {names[0]})",
+                          f"woman({names[0]})"]
+        elif "is a grandparent of" in statement:
+            assertions = [f"child({names[1]}, I)",
+                          f"child(I, {names[0]})"]
+
+        # aunt and uncle
+        elif "is an aunt of" in statement:
+            assertions = [f"child({names[0]}, J)",
+                          f"child(K, J)",
+                          f"child({names[1]}, K)"]
+        elif "is an uncle of" in statement:
+            assertions = [f"child({names[0]}, L)",
+                          f"child(M, L)",
+                          f"child({names[1]}, M)"]
+
+        # siblings
+        elif "and" in statement and "are siblings" in statement:
+            assertions = [f"child({names[1]}, N)",
+                          f"child({names[0]}, N)"]
+        elif "is a brother of" in statement:
+            assertions = [f"child({names[1]}, O)",
+                          f"child({names[0]}, O)"]
+        elif "is a sister of" in statement:
+            assertions = [f"child({names[1]}, P)",
+                          f"child({names[0]}, P)"]
+            
+        if "grandfather" in statement or "uncle" in statement or "brother" in statement:
+            family_tree.prolog.assertz(f"man({names[0]})")
+        elif "grandmother" in statement or "aunt" in statement or "sister" in statement:
+            family_tree.prolog.assertz(f"woman({names[0]})")
+
+        if len(assertions) == 0:
+            return True
+        
+        for assertion in assertions:
+            result.append(self.assertion_exists(assertion, family_tree))
+
+        if False in result:
+            return False
+        else:
+            return True
