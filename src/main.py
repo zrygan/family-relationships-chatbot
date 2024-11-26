@@ -89,24 +89,28 @@ def ask_question(input):
 # adds fact to the knowledge base if valid
 # returns the validity of the fact 
 def handle_statement(input):
-    # transform statement into an assertion
-    try:
+    try: # transform statement into an assertion
         statement = prompt.remove_vars_and_consts(input)
         names = prompt.extract_names(input)
         names = [name.lower() for name in names]
-        assertions = prompt.get_assertion(input, names)
-    except Exception as e:
+        query, assertions = prompt.get_assertion(input, names)
+    except Exception as e: # name/s caused errors
         return "Who were you talking about again?"
 
-    # TODO: check relationship / assertion validity
+    if not assertions: # assertion was not generated
+        return "Your statement confuses me. Can you say that again?"
+    elif prompt.is_redundant(query, prolog): # redundant statement
+        return "Oh! I already know this."
+    else: # checking assertion validity
+        for assertion in assertions:
+            valid = prompt.is_assertion_valid(assertion, names, prolog)
+            
+            if not valid: # terminate if invalid
+                return 1
     
-    if not assertions:
-        return "My Apologies. Your statement confuses me."
-    else:  # valid assertion
-        try: 
+        try: # valid assertion
             for assertion in assertions:
                 family_tree.prolog.assertz(assertion)
-                # family_tree.prolog.retract(assertion)
             return "Alright! I've grasped this knowledge"
         except Exception as e:
             return "Hmmm... Your statement is problematic."
@@ -114,11 +118,11 @@ def handle_statement(input):
 def main():
     # print a welcome message for the user
     print("Greetings! I am the AncesTree.") 
-    time.sleep(1)
+    #time.sleep(1)
     print("I house knowledge which unites families!")
-    time.sleep(1)
+    #time.sleep(1)
     print("Ask me a question or supply me with information.")
-    time.sleep(1)
+    #time.sleep(1)
 
     # array of messages
     messages = [
@@ -138,25 +142,25 @@ def main():
     while True:
         # prompt user for input 
         print("\n" + random.choice(messages))
-        time.sleep(1)
+        #time.sleep(1)
         user_input = input("> ").strip() 
 
         # exiting chatbot
         if user_input.lower() == "exit":
             print("\nI'm rooting for you! Farewell...")
-            time.sleep(1)
+            #time.sleep(1)
             break
 
         # checking input
         if user_input.endswith("?"): # check if input is a question
             print("\n" + ask_question(user_input)) # getting an answer
-            time.sleep(1)
+            #time.sleep(1)
         elif user_input.endswith("."): # check if input is a statement 
             print("\n" + handle_statement(user_input))
-            time.sleep(1)
+            #time.sleep(1)
         else: # invalid input
             print("\nI'm stumped! I couldn't understand.")
-            time.sleep(1)
+            #time.sleep(1)
 
 if __name__ == "__main__":
     main()
