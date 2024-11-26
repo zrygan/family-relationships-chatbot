@@ -100,8 +100,9 @@ def handle_statement(input):
     if not assertions: # assertion was not generated
         return "Your statement confuses me. Can you say that again?"
     
-    if prompt.assertion_exists(query[0], family_tree):
-            return "Oh! I already know this."
+    # FIXME: remove # after debugging
+    #if prompt.assertion_exists(query[0], family_tree):
+           # return "Oh! I already know this."
 
     for q in query: # checking validity of assertions
         if not prompt.is_assertion_valid(q, names, family_tree):
@@ -116,6 +117,7 @@ def handle_statement(input):
         return "Hmmm... Your statement is problematic."
 
 def main():
+    os.system('cls')
     # print a welcome message for the user
     print("Greetings! I am the AncesTree.") 
     #time.sleep(1)

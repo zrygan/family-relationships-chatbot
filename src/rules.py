@@ -284,18 +284,18 @@ class Prompts:
 
         # grandparents
         if "is a grandfather of" in statement:
-            assertions = [f"child(G, {names[0]})",
-                          f"child({names[1]}, G)",
+            assertions = [f"child({names[1]}, G)",
+                          f"child(G, {names[0]})",
                           f"man({names[0]})"]
             query = [f"grandfather({names[0]}, {names[1]})"]
         elif "is a grandmother of" in statement:
-            assertions = [f"child(H, {names[0]})",
-                          f"child({names[1]}, H)",
+            assertions = [f"child({names[1]}, H)",
+                          f"child(H, {names[0]})",
                           f"woman({names[0]})"]
             query = [f"grandmother({names[0]}, {names[1]})"]
         elif "is a grandparent of" in statement:
-            assertions = [f"child(I, {names[0]})",
-                          f"child({names[1]}, I)"]
+            assertions = [f"child({names[1]}, I)",
+                          f"child(I, {names[0]})"]
             query = [f"grandparent({names[0]}, {names[1]})"]
 
         # parents
@@ -337,11 +337,11 @@ class Prompts:
                 query.append(f"child({names[i]}, {names[-1]})")
         elif "is a son of" in statement:
             assertions = [f"man({names[0]})",
-                          f"child({names[1]}, {names[0]})"]
+                          f"child({names[0]}, {names[1]})"]
             query = [f"son({names[0]}, {names[1]})"]
         elif "is a daughter of" in statement:
             assertions = [f"woman({names[0]})",
-                          f"child({names[1]}, {names[0]})"]
+                          f"child({names[0]}, {names[1]})"]
             query = [f"daughter({names[0]}, {names[1]})"]
 
         # siblings
@@ -360,7 +360,6 @@ class Prompts:
                           f"child({names[0]}, P)"]
             query = [f"sister({names[0]}, {names[1]})"]
 
-        print(assertions)
         return query, assertions
     
     # checks if a fact is already within th knowledge base
@@ -387,8 +386,6 @@ class Prompts:
                 f"aunt({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})",
                 f"siblings({names[0]}, {names[1]})"
             ]
 
@@ -401,8 +398,6 @@ class Prompts:
                 f"aunt({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})",
                 f"siblings({names[0]}, {names[1]})"
             ]
 
@@ -414,8 +409,6 @@ class Prompts:
                 f"aunt({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})",
                 f"siblings({names[0]}, {names[1]})"
             ]
 
@@ -454,8 +447,6 @@ class Prompts:
                 f"aunt({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})",
                 f"siblings({names[0]}, {names[1]})"
                 ]
 
@@ -466,8 +457,6 @@ class Prompts:
                 f"grandparent({names[1]}, {names[0]})",
                 f"parent({names[0]}, {names[1]})",
                 f"parent({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})",
                 f"siblings({names[0]}, {names[1]})"
             ]
 
@@ -478,8 +467,6 @@ class Prompts:
                 f"grandparent({names[1]}, {names[0]})",
                 f"parent({names[0]}, {names[1]})",
                 f"parent({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})",
                 f"siblings({names[0]}, {names[1]})"
             ]
 
@@ -488,7 +475,6 @@ class Prompts:
                 f"grandparent({names[0]}, {names[1]})",
                 f"grandparent({names[1]}, {names[0]})",
                 f"parent({names[0]}, {names[1]})",
-                f"parent({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
                 f"aunt({names[0]}, {names[1]})",
@@ -502,7 +488,6 @@ class Prompts:
                 f"grandparent({names[0]}, {names[1]})",
                 f"grandparent({names[1]}, {names[0]})",
                 f"parent({names[0]}, {names[1]})",
-                f"parent({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
                 f"aunt({names[0]}, {names[1]})",
@@ -516,7 +501,6 @@ class Prompts:
                 f"grandparent({names[0]}, {names[1]})",
                 f"grandparent({names[1]}, {names[0]})",
                 f"parent({names[0]}, {names[1]})",
-                f"parent({names[1]}, {names[0]})",
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
                 f"aunt({names[0]}, {names[1]})",
@@ -534,9 +518,7 @@ class Prompts:
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
                 f"aunt({names[0]}, {names[1]})",
-                f"aunt({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})"
+                f"aunt({names[1]}, {names[0]})"
             ]
 
         elif "sister" in assertion:
@@ -549,9 +531,7 @@ class Prompts:
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
                 f"aunt({names[0]}, {names[1]})",
-                f"aunt({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})"
+                f"aunt({names[1]}, {names[0]})"
                 ]
 
         elif "brother" in assertion:
@@ -564,17 +544,15 @@ class Prompts:
                 f"uncle({names[0]}, {names[1]})",
                 f"uncle({names[1]}, {names[0]})",
                 f"aunt({names[0]}, {names[1]})",
-                f"aunt({names[1]}, {names[0]})",
-                f"child({names[0]}, {names[1]})",
-                f"child({names[1]}, {names[0]})"
+                f"aunt({names[1]}, {names[0]})"
             ]
-    
-        print("")
-        print("these should be false:")
 
         for q in queries:
             result.append(self.assertion_exists(q, family_tree))
-        for i in range(len(queries)):
-            print(f"query: {queries[i]} = {result[i]} !")
 
+        # FIXME:
+        print("\nDebugging: All of these should be False")
+        for i in range(len(queries)):
+           print(f"{queries[i]} = {result[i]}") 
+        
         return not any(result) # if one condition is true, the assertion is invalid
