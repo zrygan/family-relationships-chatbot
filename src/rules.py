@@ -332,6 +332,7 @@ class Prompts:
             assertions = [f"child({names[0]}, {names[1]})"]
             query = [f"child({names[0]}, {names[1]})"]
         elif "and" in statement and "are children of" in statement:
+            query = []
             for i in range(len(names) - 2):
                 assertions.append(f"child({names[i]}, {names[-1]})")
                 query.append(f"child({names[i]}, {names[-1]})")
@@ -371,7 +372,6 @@ class Prompts:
                           f"child({names[1]}, P)",
                           f"child({names[0]}, P)"]
             query = [f"sister({names[0]}, {names[1]})"]
-
         return query, assertions
     
     # checks if a fact is already within th knowledge base
@@ -573,7 +573,7 @@ class Prompts:
         """
         return not any(result) # if one condition is true, the assertion is invalid
     
-    def is_assertion_feasible(self, statement, names, family_tree):
+    def is_assertion_feasible(self, statement, names, family_tree, new_assert : list):
         assertions = []
         result = []
         
@@ -609,11 +609,6 @@ class Prompts:
         elif "is a sister of" in statement:
             assertions = [f"child({names[1]}, P)",
                           f"child({names[0]}, P)"]
-            
-        if "grandfather" in statement or "uncle" in statement or "brother" in statement:
-            family_tree.prolog.assertz(f"man({names[0]})")
-        elif "grandmother" in statement or "aunt" in statement or "sister" in statement:
-            family_tree.prolog.assertz(f"woman({names[0]})")
 
         if len(assertions) == 0:
             return True
@@ -624,4 +619,11 @@ class Prompts:
         if False in result:
             return False
         else:
+            new_assert.clear()
+            if "grandfather" in statement or "uncle" in statement or "brother" in statement:
+                new_assert.append(f"man({names[0]})")
+                """family_tree.prolog.assertz(f"man({names[0]})")"""
+            elif "grandmother" in statement or "aunt" in statement or "sister" in statement:
+                new_assert.append(f"woman({names[0]})")
+                """family_tree.prolog.assertz(f"woman({names[0]})")"""
             return True
