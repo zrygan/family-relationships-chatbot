@@ -100,8 +100,9 @@ def handle_statement(input):
     if not assertions: # assertion was not generated
         return "Your statement confuses me. Can you say that again?"
     
-    if not prompt.is_assertion_feasible(statement, names, family_tree): # checks if dependent facts can be proven ( grandparents / aunts / uncles/ siblings )
+    if not prompt.is_assertion_feasible(statement, names, family_tree, assertions): # checks if dependent facts can be proven ( grandparents / aunts / uncles/ siblings )
         return "Hmm... We cannot say for sure..."
+
 
     if prompt.assertion_exists(query[0], family_tree):
         return "Oh! I already know this."
@@ -151,6 +152,8 @@ def main():
         # exiting chatbot
         if user_input.lower() == "exit":
             print("\nI'm rooting for you! Farewell...")
+            return
+            #time.sleep(1)
 
         # checking input
         if user_input.endswith("?"): # check if input is a question
