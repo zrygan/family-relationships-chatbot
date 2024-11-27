@@ -30,13 +30,10 @@ class Family_Tree:
         # the value is an array of properties (roles)
         # example of an entry: "Max" : [1,3,12] 
         #                      Max is a child, son, and a man
-        # FIXME: idk if this is needed but it's here 
         self.objects = {}
         self.define_facts()
         
     def define_facts(self):
-        # FIXME: comments are inconsistent, changed some rules here
-
         # X is a child of Y     -> Y is a parent of X
         self.prolog.assertz("parent(X,Y) :- child(Y,X), X \\= Y")
 
@@ -565,12 +562,6 @@ class Prompts:
         for q in queries:
             result.append(self.assertion_exists(q, family_tree))
 
-        # FIXME:
-        """
-        print("\nDebugging: All of these should be False")
-        for i in range(len(queries)):
-           print(f"{queries[i]} = {result[i]}") 
-        """
         return not any(result) # if one condition is true, the assertion is invalid
     
     def is_assertion_feasible(self, statement, names, family_tree):

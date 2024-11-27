@@ -146,24 +146,19 @@ def main():
     while True:
         # prompt user for input 
         print("\n" + random.choice(messages))
-        #time.sleep(1)
         user_input = input("> ").strip() 
 
         # exiting chatbot
         if user_input.lower() == "exit":
             print("\nI'm rooting for you! Farewell...")
-            #time.sleep(1)
 
         # checking input
         if user_input.endswith("?"): # check if input is a question
             print("\n" + ask_question(user_input)) # getting an answer
-            #time.sleep(1)
         elif user_input.endswith("."): # check if input is a statement 
             print("\n" + handle_statement(user_input))
-            #time.sleep(1)
         else: # invalid input
             print("\nI'm stumped! I couldn't understand.")
-            #time.sleep(1)
 
 if __name__ == "__main__":
     main()
