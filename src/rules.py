@@ -661,10 +661,6 @@ class Prompts:
         for q in queries:
             result.append(self.assertion_exists(q, family_tree))
 
-        print("\nDebugging: All of these should be False")
-        for i in range(len(queries)):
-           print(f"{queries[i]} = {result[i]}")
-
         return not any(result) # if one condition is true, the assertion is invalid
     
     def is_assertion_feasible(self, statement, names, family_tree, new_assert : list):
