@@ -112,7 +112,6 @@ def handle_statement(input):
         
     try: # valid assertion
         for assertion in assertions:
-            # print("asserted: " + assertion + "!")
             family_tree.prolog.assertz(assertion)
         return "Alright! I've grasped this knowledge"
     except Exception as e:
@@ -122,11 +121,8 @@ def main():
     os.system('cls')
     # print a welcome message for the user
     print("Greetings! I am the AncesTree.") 
-    #time.sleep(1)
     print("I house knowledge which unites families!")
-    #time.sleep(1)
     print("Ask me a question or supply me with information.")
-    #time.sleep(1)
 
     # array of messages
     messages = [
@@ -157,7 +153,7 @@ def main():
         if user_input.endswith("?"): # check if input is a question
             print("\n" + ask_question(user_input)) # getting an answer
         elif user_input.endswith("."): # check if input is a statement 
-            print("\n" + handle_statement(user_input))
+            print("\n" + handle_statement(user_input)) # getting confirmation / rejection
         else: # invalid input
             print("\nI'm stumped! I couldn't understand.")
 
