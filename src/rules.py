@@ -372,18 +372,6 @@ class Prompts:
                 assertions.append(f"child({names[i]}, {names[-1]})")
                 query.append(f"child({names[i]}, {names[-1]})")
 
-            if self.assertion_exists(f"siblings(X, {names[0]})", family_tree):
-                res = list(prolog.query(f"siblings(X, {names[0]})"))
-                for result in res:
-                    sibling = result['X']
-                    assertions.append(f"child({sibling}, {names[1]})")
-            elif self.assertion_exists(f"parent({names[1]}, X)", family_tree):
-                res = list(prolog.query(f"parent({names[1]}, X)"))
-                for result in res:
-                    child = result['X']
-                    assertions.append(f"sibling({child}, {names[0]})")
-
-
         elif "is a son of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[0]}, {names[1]})"]
@@ -399,6 +387,11 @@ class Prompts:
                 for result in res:
                     child = result['X']
                     assertions.append(f"sibling({child}, {names[0]})")
+                if self.assertion_exists(f"child({child}, X)", family_tree):
+                    res = list(prolog.query(f"child({child}, X)"))
+                    for result in res:
+                        parent = result['X']
+                        assertions.append(f"child({names[0]}, {parent})")
 
         elif "is a daughter of" in statement:
             assertions = [f"woman({names[0]})",
@@ -415,6 +408,11 @@ class Prompts:
                 for result in res:
                     child = result['X']
                     assertions.append(f"sibling({child}, {names[0]})")
+                if self.assertion_exists(f"child({child}, X)", family_tree):
+                    res = list(prolog.query(f"child({child}, X)"))
+                    for result in res:
+                        parent = result['X']
+                        assertions.append(f"child({names[0]}, {parent})")
 
         # siblings
         elif "and" in statement and "are siblings" in statement:
