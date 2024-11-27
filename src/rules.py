@@ -81,18 +81,10 @@ class Family_Tree:
         self.prolog.assertz(
             "relatives(X, Y) :- "
             "(grandparent(X, Y); grandparent(Y, X); "
-            "grandmother(X, Y); grandmother(Y, X); "
-            "grandfather(X, Y); grandfather(Y, X); "
             "parent(X, Y); parent(Y, X); "
-            "mother(X, Y); mother(Y, X); "
-            "father(X, Y); father(Y, X); "
-            "aunt(X, Y); aunt(Y, X); "
-            "uncle(X, Y); uncle(Y, X); "
-            "daughter(X, Y); daughter(Y, X); "
-            "son(X, Y); son(Y, X); "
-            "sister(X, Y); sister(Y, X); "
-            "brother(X, Y); brother(Y, X); "
-            "siblings(X, Y); siblings(Y, X))"
+            "siblings(X, Y); siblings(Y, X);"
+            "(child(X,A), child(Z,A), X \\=Z, parent(Z,Y));"
+    		"(child(Y,A), child(Z,A), Y \\=Z, parent(Z,X)))"
         )
         
 import re
@@ -484,7 +476,6 @@ class Prompts:
 
         if names[0] == names [1]:
             return False
-
         # must not be woman / parent / aunt / uncle / child / sibling
         if "grandfather" in assertion:
             queries = [
@@ -580,16 +571,15 @@ class Prompts:
             ]
 
         elif "child" in assertion:
-            queries = [
-                f"grandparent({names[0]}, {names[1]})",
-                f"grandparent({names[1]}, {names[0]})",
-                f"parent({names[0]}, {names[1]})",
-                f"uncle({names[0]}, {names[1]})",
-                f"uncle({names[1]}, {names[0]})",
-                f"aunt({names[0]}, {names[1]})",
-                f"aunt({names[1]}, {names[0]})",
-                f"siblings({names[0]}, {names[1]})"
-            ]
+            for i in range(len(names) - 1):
+                queries.append(f"grandparent({names[i]}, {names[-1]})")
+                queries.append(f"grandparent({names[-1]}, {names[i]})")
+                queries.append(f"parent({names[i]}, {names[-1]})")
+                queries.append(f"uncle({names[i]}, {names[-1]})")
+                queries.append(f"uncle({names[-1]}, {names[i]})")
+                queries.append(f"aunt({names[i]}, {names[-1]})")
+                queries.append(f"aunt({names[-1]}, {names[i]})")
+                queries.append(f"siblings({names[i]}, {names[-1]})")
 
         elif "son" in assertion:
             queries = [
@@ -655,7 +645,6 @@ class Prompts:
                 f"aunt({names[0]}, {names[1]})",
                 f"aunt({names[1]}, {names[0]})"
             ]
-
         for q in queries:
             result.append(self.assertion_exists(q, family_tree))
 

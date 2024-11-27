@@ -9,7 +9,6 @@ family_tree = Family_Tree()
 def ask_question(input):
     names = prompt.extract_names(input) # extracting names
     relation, query = prompt.get_query(input, names)
-
     if query is not None:
         n = len(names)
         try:
@@ -96,10 +95,9 @@ def handle_statement(input):
         query, assertions = prompt.get_assertion(input, names, family_tree)
     except Exception as e: # name/s caused errors
         return "Who were you talking about again?"
-
     if not assertions: # assertion was not generated
         return "Your statement confuses me. Can you say that again?"
-    
+
     for q in query: # checking validity of assertions
         if not prompt.is_assertion_valid(q, names, family_tree):
             return "I don't think that's possible..."
