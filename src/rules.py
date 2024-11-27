@@ -368,7 +368,7 @@ class Prompts:
 
         elif "and" in statement and "are children of" in statement:
             query = []
-            for i in range(len(names) - 2):
+            for i in range(len(names) - 1):
                 assertions.append(f"child({names[i]}, {names[-1]})")
                 query.append(f"child({names[i]}, {names[-1]})")
 
