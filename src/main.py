@@ -103,9 +103,8 @@ def handle_statement(input):
     if not prompt.is_assertion_feasible(statement, names, family_tree, assertions): # checks if dependent facts can be proven ( grandparents / aunts / uncles/ siblings )
         return "Hmm... We cannot say for sure..."
 
-
-    if prompt.assertion_exists(query[0], family_tree):
-        return "Oh! I already know this."
+    # if prompt.assertion_exists(query[0], family_tree):
+        #return "Oh! I already know this."
 
     for q in query: # checking validity of assertions
         if not prompt.is_assertion_valid(q, names, family_tree):

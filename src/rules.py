@@ -300,15 +300,50 @@ class Prompts:
             assertions = [f"woman({names[0]})",
                           f"child({names[1]}, {names[0]})"]
             query = [f"mother({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"siblings(X, {names[1]})", family_tree):
+                res = list(prolog.query(f"siblings(X, {names[1]})"))
+                for result in res:
+                    sibling = result['X']
+                    assertions.append(f"child({sibling}, {names[0]})")
+            elif self.assertion_exists(f"parent({names[0]}, X)", family_tree):
+                res = list(prolog.query(f"parent({names[0]}, X)"))
+                for result in res:
+                    child = result['X']
+                    assertions.append(f"sibling({child}, {names[1]})")
+                
         elif "is the father of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[1]}, {names[0]})"]
             query = [f"father({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"siblings(X, {names[1]})", family_tree):
+                res = list(prolog.query(f"siblings(X, {names[1]})"))
+                for result in res:
+                    sibling = result['X']
+                    assertions.append(f"child({sibling}, {names[0]})")
+            elif self.assertion_exists(f"parent({names[0]}, X)", family_tree):
+                res = list(prolog.query(f"parent({names[0]}, X)"))
+                for result in res:
+                    child = result['X']
+                    assertions.append(f"sibling({child}, {names[1]})")
+
         elif "and" in statement and "are the parents of" in statement:
             assertions = [f"child({names[2]}, {names[0]})",
                           f"child({names[2]}, {names[1]})"]
             query = [f"parent({names[0]}, {names[2]})",
                      f"parent({names[1]}, {names[2]})"]
+            
+            if self.assertion_exists(f"siblings(X, {names[1]})", family_tree):
+                res = list(prolog.query(f"siblings(X, {names[1]})"))
+                for result in res:
+                    sibling = result['X']
+                    assertions.append(f"child({sibling}, {names[0]})")
+            elif self.assertion_exists(f"parent({names[0]}, X)", family_tree):
+                res = list(prolog.query(f"parent({names[0]}, X)"))
+                for result in res:
+                    child = result['X']
+                    assertions.append(f"sibling({child}, {names[1]})")
 
         # aunt and uncle
         elif "is an aunt of" in statement:
@@ -328,19 +363,58 @@ class Prompts:
         elif "is a child of" in statement:
             assertions = [f"child({names[0]}, {names[1]})"]
             query = [f"child({names[0]}, {names[1]})"]
+
+
+
         elif "and" in statement and "are children of" in statement:
             query = []
             for i in range(len(names) - 2):
                 assertions.append(f"child({names[i]}, {names[-1]})")
                 query.append(f"child({names[i]}, {names[-1]})")
+
+            if self.assertion_exists(f"siblings(X, {names[0]})", family_tree):
+                res = list(prolog.query(f"siblings(X, {names[0]})"))
+                for result in res:
+                    sibling = result['X']
+                    assertions.append(f"child({sibling}, {names[1]})")
+            elif self.assertion_exists(f"parent({names[1]}, X)", family_tree):
+                res = list(prolog.query(f"parent({names[1]}, X)"))
+                for result in res:
+                    child = result['X']
+                    assertions.append(f"sibling({child}, {names[0]})")
+
+
         elif "is a son of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[0]}, {names[1]})"]
             query = [f"son({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"siblings(X, {names[0]})", family_tree):
+                res = list(prolog.query(f"siblings(X, {names[0]})"))
+                for result in res:
+                    sibling = result['X']
+                    assertions.append(f"child({sibling}, {names[1]})")
+            elif self.assertion_exists(f"parent({names[1]}, X)", family_tree):
+                res = list(prolog.query(f"parent({names[1]}, X)"))
+                for result in res:
+                    child = result['X']
+                    assertions.append(f"sibling({child}, {names[0]})")
+
         elif "is a daughter of" in statement:
             assertions = [f"woman({names[0]})",
                           f"child({names[0]}, {names[1]})"]
             query = [f"daughter({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"siblings(X, {names[0]})", family_tree):
+                res = list(prolog.query(f"siblings(X, {names[0]})"))
+                for result in res:
+                    sibling = result['X']
+                    assertions.append(f"child({sibling}, {names[1]})")
+            elif self.assertion_exists(f"parent({names[1]}, X)", family_tree):
+                res = list(prolog.query(f"parent({names[1]}, X)"))
+                for result in res:
+                    child = result['X']
+                    assertions.append(f"sibling({child}, {names[0]})")
 
         # siblings
         elif "and" in statement and "are siblings" in statement:
@@ -348,27 +422,52 @@ class Prompts:
                           f"child({names[0]}, N)"]
             query = [f"siblings({names[0]}, {names[1]})"]
 
-            if self.assertion_exists(f"parent(X, {names[1]})", family_tree):
-                res = list(prolog.query(f"parent(X, {names[1]})"))
+            if self.assertion_exists(f"child({names[1]}, X)", family_tree):
+                res = list(prolog.query(f"child({names[1]}, X)"))
                 for result in res:
                     parent = result['X']
-                assertions.append(f"child({names[0]}, {parent})")
-            elif self.assertion_exists(f"parent(X, {names[0]})", family_tree):
-                res = list(prolog.query(f"parent(X, {names[0]})"))
+                    assertions.append(f"child({names[0]}, {parent})")
+            elif self.assertion_exists(f"child({names[0]}, X)", family_tree):
+                res = list(prolog.query(f"child({names[0]}, X"))
                 for result in res:
                     parent = result['X']
-                assertions.append(f"child({names[1]}, {parent})")
+                    assertions.append(f"child({names[1]}, {parent})")
 
         elif "is a brother of" in statement:
             assertions = [f"man({names[0]})",
                           f"child({names[1]}, O)",
                           f"child({names[0]}, O)"]
             query = [f"brother({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"parent(X, {names[1]})", family_tree):
+                res = list(prolog.query(f"parent(X, {names[1]})"))
+                for result in res:
+                    parent = result['X']
+                    assertions.append(f"child({names[0]}, {parent})")
+            elif self.assertion_exists(f"parent(X, {names[0]})", family_tree):
+                res = list(prolog.query(f"parent(X, {names[0]})"))
+                for result in res:
+                    parent = result['X']
+                    print(parent)
+                    assertions.append(f"child({names[1]}, {parent})")
+            
         elif "is a sister of" in statement:
             assertions = [f"woman({names[0]})",
                           f"child({names[1]}, P)",
                           f"child({names[0]}, P)"]
             query = [f"sister({names[0]}, {names[1]})"]
+
+            if self.assertion_exists(f"parent(X, {names[1]})", family_tree):
+                res = list(prolog.query(f"parent(X, {names[1]})"))
+                for result in res:
+                    parent = result['X']
+                    assertions.append(f"child({names[0]}, {parent})")
+            elif self.assertion_exists(f"parent(X, {names[0]})", family_tree):
+                res = list(prolog.query(f"parent(X, {names[0]})"))
+                for result in res:
+                    parent = result['X']
+                    assertions.append(f"child({names[1]}, {parent})")
+
         return query, assertions
     
     # checks if a fact is already within th knowledge base
@@ -561,6 +660,10 @@ class Prompts:
 
         for q in queries:
             result.append(self.assertion_exists(q, family_tree))
+
+        print("\nDebugging: All of these should be False")
+        for i in range(len(queries)):
+           print(f"{queries[i]} = {result[i]}")
 
         return not any(result) # if one condition is true, the assertion is invalid
     
