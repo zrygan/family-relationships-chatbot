@@ -151,9 +151,8 @@ def main():
 
         # exiting chatbot
         if user_input.lower() == "exit":
-            print("\nI'm rooting for you! Farewell...")
+            print("\nI'm always rooting for you! Farewell...")
             return
-            #time.sleep(1)
 
         # checking input
         if user_input.endswith("?"): # check if input is a question
